@@ -109,11 +109,20 @@ function results = sweep(model, varargin)
     fprintf('⏳ 开始仿真...\n');
     t_start = tic;
 
+    % 初始化临时存储
+    metric_results = struct();
+    for m = 1:numel(opts.metrics)
+        metric_results.(opts.metrics{m}) = zeros(n_combinations, 1);
+    end
+
     if opts.parallel && license('test', 'Distrib_Computing_Toolbox')
         % 并行仿真
         fprintf('   使用并行计算 (parfor)\n');
         parfor idx = 1:n_combinations
-            run_single_sim(model, params, param_names, grid_values, idx, opts, results);
+            local_metrics = run_single_sim(model, param_names, grid_values, idx, opts);
+            for m = 1:numel(opts.metrics)
+                metric_results.(opts.metrics{m})(idx) = local_metrics.(opts.metrics{m});
+            end
         end
     else
         % 串行仿真
@@ -128,9 +137,7 @@ function results = sweep(model, varargin)
             end
 
             % 设置参数
-            sim_params = struct();
             for p = 1:numel(param_names)
-                sim_params.(param_names{p}) = grid_values{p}(idx);
                 assignin('base', param_names{p}, grid_values{p}(idx));
             end
 
@@ -141,15 +148,20 @@ function results = sweep(model, varargin)
                 % 提取指标
                 metrics = extract_metrics(sim_out, opts.metrics);
                 for m = 1:numel(opts.metrics)
-                    results.data.(opts.metrics{m})(idx) = metrics.(opts.metrics{m});
+                    metric_results.(opts.metrics{m})(idx) = metrics.(opts.metrics{m});
                 end
             catch ME
                 fprintf('   ⚠️  仿真 %d 失败: %s\n', idx, ME.message);
                 for m = 1:numel(opts.metrics)
-                    results.data.(opts.metrics{m})(idx) = NaN;
+                    metric_results.(opts.metrics{m})(idx) = NaN;
                 end
             end
         end
+    end
+
+    % 将结果存入结构体
+    for m = 1:numel(opts.metrics)
+        results.data.(opts.metrics{m}) = reshape(metric_results.(opts.metrics{m}), size(grid_values{1}));
     end
 
     elapsed = toc(t_start);
@@ -266,22 +278,23 @@ function metrics = extract_metrics(sim_out, metric_names)
     end
 end
 
-function run_single_sim(model, params, param_names, grid_values, idx, opts, results)
+function metrics = run_single_sim(model, param_names, grid_values, idx, opts)
     % 设置参数
     for p = 1:numel(param_names)
         assignin('base', param_names{p}, grid_values{p}(idx));
+    end
+
+    % 初始化指标
+    metrics = struct();
+    for m = 1:numel(opts.metrics)
+        metrics.(opts.metrics{m}) = NaN;
     end
 
     % 运行仿真
     try
         sim_out = sim(model, 'Timeout', opts.timeout);
         metrics = extract_metrics(sim_out, opts.metrics);
-        for m = 1:numel(opts.metrics)
-            results.data.(opts.metrics{m})(idx) = metrics.(opts.metrics{m});
-        end
     catch
-        for m = 1:numel(opts.metrics)
-            results.data.(opts.metrics{m})(idx) = NaN;
-        end
+        % 保持 NaN 值
     end
 end

@@ -89,14 +89,18 @@ function issues = check_unconnected_ports(model_name)
     % 查找所有未连接的端口
     ports = find_system(model_name, 'FindAll', 'on', 'Type', 'port', 'Line', -1);
 
-    for i = 1:numel(issues)
-        port_name = get_param(ports(i), 'Name');
-        parent = get_param(ports(i), 'Parent');
-        issues{end+1} = struct(...
-            'type', 'unconnected_port', ...
-            'severity', 'warning', ...
-            'message', sprintf('未连接的端口: %s', port_name), ...
-            'block', parent);
+    for i = 1:numel(ports)
+        try
+            port_name = get_param(ports(i), 'Name');
+            parent = get_param(ports(i), 'Parent');
+            issues{end+1} = struct(...
+                'type', 'unconnected_port', ...
+                'severity', 'warning', ...
+                'message', sprintf('未连接的端口: %s', port_name), ...
+                'block', parent);
+        catch
+            % 忽略无法读取的端口
+        end
     end
 end
 

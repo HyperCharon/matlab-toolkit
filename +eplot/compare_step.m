@@ -24,7 +24,7 @@ function fig = compare_step(systems, varargin)
         varargin
     end
 
-    opts = struct('labels', {}, 'style', '', 'metrics', true, 't', [], 'title', 'Step Response Comparison');
+    opts = struct('labels', {[]}, 'style', '', 'metrics', true, 't', [], 'title', 'Step Response Comparison');
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end

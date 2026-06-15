@@ -17,8 +17,14 @@ function colorscheme(fig, scheme)
         scheme = 'ieee'
     end
 
+    % 处理第一个参数是 scheme 字符串的情况
+    if ischar(fig) || isstring(fig)
+        scheme = fig;
+        fig = gcf;
+    end
+
     % 如果请求列表
-    if ischar(fig) && strcmp(fig, 'list')
+    if ischar(scheme) && strcmp(scheme, 'list')
         fig = get_available_schemes();
         return;
     end

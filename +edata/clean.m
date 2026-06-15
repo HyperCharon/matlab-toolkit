@@ -89,10 +89,10 @@ function data = clean(data, varargin)
                     case 'iqr'
                         Q1 = prctile(col, 25);
                         Q3 = prctile(col, 75);
-                        IQR = Q3 - Q1;
-                        lower = Q1 - opts.outlier_factor * IQR;
-                        upper = Q3 + opts.outlier_factor * IQR;
-                        outlier_mask = col < lower | col > upper;
+                        IQR_val = Q3 - Q1;
+                        lower_bound = Q1 - opts.outlier_factor * IQR_val;
+                        upper_bound = Q3 + opts.outlier_factor * IQR_val;
+                        outlier_mask = col < lower_bound | col > upper_bound;
 
                     case 'zscore'
                         z = abs((col - mean(col)) / std(col));

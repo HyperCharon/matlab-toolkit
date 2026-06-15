@@ -22,7 +22,7 @@ function optimize(func_or_script, varargin)
 %
 %   See also eutils.check_code, eutils.benchmark
 
-    opts = struct('inputs', {}, 'iterations', 10, 'verbose', true, 'report', true);
+    opts = struct('inputs', {[]}, 'iterations', 10, 'verbose', true, 'report', true);
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end

@@ -3,10 +3,18 @@ function export_tikz(fig, filename, varargin)
 %
 %   eplot.export_tikz(gcf, 'figure.tex')
 %   eplot.export_tikz(gcf, 'figure.tex', 'width', '\textwidth')
+%   eplot.export_tikz('figure.tex')  % 使用当前 figure
 %
 %   依赖: matlab2tikz (可选，如果没有则生成简化版本)
 %
 %   See also eplot.export
+
+    % 处理第一个参数是文件名的情况
+    if ischar(fig) || isstring(fig)
+        varargin = [{filename} varargin];
+        filename = fig;
+        fig = gcf;
+    end
 
     opts = struct('width', '\textwidth', 'height', '', 'standalone', false);
     for i = 1:2:numel(varargin)

@@ -20,16 +20,23 @@ function batch_export(input_dir, output_dir, formats, varargin)
     arguments
         input_dir char
         output_dir char = 'exported_figures'
-        formats = {'pdf'}
     end
     arguments (Repeating)
         varargin
     end
 
     % 解析参数
+    formats = {'pdf'};
     opts = struct('style', '', 'dpi', 300, 'prefix', '', 'suffix', '');
-    for i = 1:2:numel(varargin)
-        opts.(varargin{i}) = varargin{i+1};
+    i = 1;
+    while i <= numel(varargin)
+        if ischar(varargin{i}) && isfield(opts, varargin{i})
+            opts.(varargin{i}) = varargin{i+1};
+            i = i + 2;
+        else
+            formats = varargin{i};
+            i = i + 1;
+        end
     end
 
     % 确保 formats 是 cell array

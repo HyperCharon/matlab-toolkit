@@ -26,7 +26,7 @@ function results = benchmark(varargin)
         compare_mode = false;
     end
 
-    opts = struct('inputs', {}, 'iterations', 100, 'warmup', 5, 'verbose', true);
+    opts = struct('inputs', {[]}, 'iterations', 100, 'warmup', 5, 'verbose', true);
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end

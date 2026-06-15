@@ -76,7 +76,7 @@ classdef units
                     fprintf('📋 %s 类别的单位:\n', category);
                     fields = fieldnames(units_map.(category));
                     for i = 1:numel(fields)
-                        fprintf('   %s\n", fields{i});
+                        fprintf('   %s\n', fields{i});
                     end
                 else
                     fprintf('未知类别: %s\n', category);

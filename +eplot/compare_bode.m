@@ -6,7 +6,7 @@ function fig = compare_bode(systems, varargin)
 %
 %   See also eplot.compare_step, eplot.style
 
-    opts = struct('labels', {}, 'style', '', 'w', [], 'title', 'Bode Plot Comparison');
+    opts = struct('labels', {[]}, 'style', '', 'w', [], 'title', 'Bode Plot Comparison');
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end

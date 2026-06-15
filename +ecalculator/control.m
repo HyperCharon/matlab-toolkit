@@ -360,32 +360,40 @@ end
 
 function table = routh_array(coeffs)
     % 计算劳斯表
+    % coeffs: 特征多项式系数 [a_n, a_{n-1}, ..., a_1, a_0]
     n = numel(coeffs);
-    m = ceil(n/2);
 
-    table = zeros(n, m);
+    % 劳斯表大小
+    rows = n;
+    cols = ceil(n/2);
 
-    % 前两行
-    row1_idx = 1:2:n;
-    row2_idx = 2:2:n;
+    table = zeros(rows, cols);
 
-    for i = 1:numel(row1_idx)
-        if row1_idx(i) <= n
-            table(1, i) = coeffs(row1_idx(i));
+    % 第一行: a_n, a_{n-2}, a_{n-4}, ...
+    for i = 1:cols
+        idx = 2*i - 1;
+        if idx <= n
+            table(1, i) = coeffs(idx);
         end
     end
-    for i = 1:numel(row2_idx)
-        if row2_idx(i) <= n
-            table(2, i) = coeffs(row2_idx(i));
+
+    % 第二行: a_{n-1}, a_{n-3}, a_{n-5}, ...
+    for i = 1:cols
+        idx = 2*i;
+        if idx <= n
+            table(2, i) = coeffs(idx);
         end
     end
 
     % 后续行
-    for i = 3:n
-        for j = 1:m-1
-            if table(i-1, 1) == 0
-                table(i-1, 1) = 1e-10;  % 避免除零
-            end
+    for i = 3:rows
+        % 检查前一行第一列是否为零
+        if table(i-1, 1) == 0
+            % 用极小值替代
+            table(i-1, 1) = 1e-10;
+        end
+
+        for j = 1:cols-1
             table(i, j) = (table(i-1, 1)*table(i-2, j+1) - table(i-2, 1)*table(i-1, j+1)) / table(i-1, 1);
         end
     end

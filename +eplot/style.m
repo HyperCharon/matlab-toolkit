@@ -30,10 +30,17 @@ function style(fig_or_ax, preset, varargin)
 
     arguments
         fig_or_ax = gcf
-        preset {mustBeMember(preset, {'ieee','nature','springer','thesis','beamer','dark','default'})} = 'ieee'
+        preset {mustBeMember(preset, {'ieee','nature','springer','thesis','beamer','dark','default','custom'})} = 'ieee'
     end
     arguments (Repeating)
         varargin
+    end
+
+    % 处理第一个参数是 preset 字符串的情况
+    if ischar(fig_or_ax) || isstring(fig_or_ax)
+        varargin = [{preset} varargin];
+        preset = char(fig_or_ax);
+        fig_or_ax = gcf;
     end
 
     % 解析额外参数

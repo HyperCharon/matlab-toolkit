@@ -19,21 +19,16 @@ function fig = waterfall(x, y, z, varargin)
 
     % 绘制瀑布图
     n_lines = size(z, 1);
-    cmap = colormap(opts.colormap);
-    color_idx = round(linspace(1, size(cmap, 1), n_lines));
+
+    % 获取颜色映射
+    cmap_func = str2func(opts.colormap);
+    cmap = cmap_func(n_lines);
 
     hold on;
     for i = 1:n_lines
-        if nargin >= 3 && ismatrix(z)
-            % z 是矩阵，每行是一条曲线
-            plot3(x, y(i)*ones(size(x)), z(i,:), ...
-                'Color', [cmap(color_idx(i), :) opts.alpha], ...
-                'LineWidth', 1.5);
-        else
-            plot3(x, y(i)*ones(size(x)), z(i,:), ...
-                'Color', [cmap(color_idx(i), :) opts.alpha], ...
-                'LineWidth', 1.5);
-        end
+        plot3(x, y(i)*ones(size(x)), z(i,:), ...
+            'Color', [cmap(i, :) opts.alpha], ...
+            'LineWidth', 1.5);
     end
 
     xlabel(opts.xlabel);
