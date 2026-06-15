@@ -69,7 +69,7 @@ classdef sysid
             fprintf('📊 系统辨识结果:\n');
             fprintf('   方法:     %s\n', model_name);
             fprintf('   模型阶次: %d\n', opts.order);
-            fprintf('   拟合度:   %.2f%%\n", fit);
+            fprintf('   拟合度:   %.2f%%\n', fit);
 
             % 获取传递函数参数
             [num, den] = tfdata(model, 'v');
@@ -155,12 +155,12 @@ classdef sysid
             fit = 100 * (1 - norm(exp_data - sim_data) / norm(exp_data - mean(exp_data)));
 
             fprintf('📊 仿真 vs 实验对比:\n');
-            fprintf('   数据长度: %d 点\n", N);
-            fprintf('   RMSE:     %.6f\n", rmse_val);
-            fprintf('   MAE:      %.6f\n", mae_val);
-            fprintf('   最大误差: %.6f\n", max_error);
-            fprintf('   相关系数: %.4f\n", correlation);
-            fprintf('   拟合度:   %.2f%%\n", fit);
+            fprintf('   数据长度: %d 点\n', N);
+            fprintf('   RMSE:     %.6f\n', rmse_val);
+            fprintf('   MAE:      %.6f\n', mae_val);
+            fprintf('   最大误差: %.6f\n', max_error);
+            fprintf('   相关系数: %.4f\n', correlation);
+            fprintf('   拟合度:   %.2f%%\n', fit);
 
             if fit > 90
                 fprintf('   ✅ 拟合度优秀\n');
@@ -268,9 +268,9 @@ classdef sysid
                     model_name = '一阶系统';
 
                     fprintf('📊 阶跃响应辨识 (%s):\n', model_name);
-                    fprintf('   增益 K:   %.4f\n", K);
-                    fprintf('   时间常数 τ: %.4f s\n", tau);
-                    fprintf('   带宽:     %.2f Hz\n", 1/(2*pi*tau));
+                    fprintf('   增益 K:   %.4f\n', K);
+                    fprintf('   时间常数 τ: %.4f s\n', tau);
+                    fprintf('   带宽:     %.2f Hz\n', 1/(2*pi*tau));
 
                 case 2
                     % 二阶系统: G(s) = K·ωn² / (s² + 2ζωn·s + ωn²)
@@ -290,9 +290,9 @@ classdef sysid
                     model_name = '二阶系统';
 
                     fprintf('📊 阶跃响应辨识 (%s):\n', model_name);
-                    fprintf('   增益 K:   %.4f\n", K);
-                    fprintf('   固有频率 ωn: %.4f rad/s (%.2f Hz)\n", omega_n, omega_n/(2*pi));
-                    fprintf('   阻尼比 ζ: %.4f\n", zeta);
+                    fprintf('   增益 K:   %.4f\n', K);
+                    fprintf('   固有频率 ωn: %.4f rad/s (%.2f Hz)\n', omega_n, omega_n/(2*pi));
+                    fprintf('   阻尼比 ζ: %.4f\n', zeta);
             end
 
             % 绘图

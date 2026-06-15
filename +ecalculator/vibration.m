@@ -327,7 +327,7 @@ classdef vibration
 
             fprintf('📊 传递函数估计:\n');
             fprintf('   数据长度: %d 点\n', N);
-            fprintf('   FFT 点数: %d\n", opts.nfft);
+            fprintf('   FFT 点数: %d\n', opts.nfft);
             fprintf('   频率分辨率: %.4f Hz\n', Fs/opts.nfft);
             fprintf('   平均相干: %.4f\n', mean(Cxy));
 
@@ -412,7 +412,7 @@ classdef vibration
 
             fprintf('📊 功率谱密度估计:\n');
             fprintf('   方法: %s\n', opts.method);
-            fprintf('   频率分辨率: %.4f Hz\n", f(2)-f(1));
+            fprintf('   频率分辨率: %.4f Hz\n', f(2)-f(1));
             fprintf('   峰值频率: %.4f Hz\n', f(Pxx == max(Pxx)));
 
             if opts.plot
@@ -452,10 +452,10 @@ classdef vibration
             end
 
             fprintf('📊 RMS 包络分析:\n');
-            fprintf('   窗口大小: %d 点 (%.4f s)\n", window_size, window_size/Fs);
-            fprintf('   包络均值: %.6f\n", mean(rms_env));
-            fprintf('   包络最大: %.6f\n", max(rms_env));
-            fprintf('   包络最小: %.6f\n", min(rms_env));
+            fprintf('   窗口大小: %d 点 (%.4f s)\n', window_size, window_size/Fs);
+            fprintf('   包络均值: %.6f\n', mean(rms_env));
+            fprintf('   包络最大: %.6f\n', max(rms_env));
+            fprintf('   包络最小: %.6f\n', min(rms_env));
 
             figure('Name', 'RMS Envelope');
             subplot(2,1,1);

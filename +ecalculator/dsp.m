@@ -50,8 +50,8 @@ classdef dsp
             fprintf('🎛️  FIR 滤波器设计:\n');
             fprintf('   类型:       %s\n', spec.type);
             fprintf('   阶数:       %d\n', spec.order);
-            fprintf('   通带频率:   %.2f Hz\n", spec.Fpass);
-            fprintf('   采样率:     %.2f Hz\n", spec.Fs);
+            fprintf('   通带频率:   %.2f Hz\n', spec.Fpass);
+            fprintf('   采样率:     %.2f Hz\n', spec.Fs);
 
             % 绘制频率响应
             figure('Name', 'FIR Filter Response');
@@ -117,10 +117,10 @@ classdef dsp
 
             fprintf('🎛️  IIR 滤波器设计:\n');
             fprintf('   类型:       %s\n', spec.type);
-            fprintf('   阶数:       %d\n", N);
-            fprintf('   通带频率:   %.2f Hz\n", spec.Fpass);
-            fprintf('   通带纹波:   %.2f dB\n", spec.ripple);
-            fprintf('   阻带衰减:   %.2f dB\n", spec.attenuation);
+            fprintf('   阶数:       %d\n', N);
+            fprintf('   通带频率:   %.2f Hz\n', spec.Fpass);
+            fprintf('   通带纹波:   %.2f dB\n', spec.ripple);
+            fprintf('   阻带衰减:   %.2f dB\n', spec.attenuation);
 
             % 绘制频率响应
             figure('Name', 'IIR Filter Response');
@@ -198,9 +198,9 @@ classdef dsp
             sidelobe_level = max(W_dB(N_fft/4:end));  % 最大旁瓣电平
 
             fprintf('📊 窗函数分析 (%s):\n', win_type);
-            fprintf('   长度:         %d\n", N);
-            fprintf('   主瓣宽度:     %.4f (归一化)\n", main_lobe_width);
-            fprintf('   最大旁瓣:     %.2f dB\n", sidelobe_level);
+            fprintf('   长度:         %d\n', N);
+            fprintf('   主瓣宽度:     %.4f (归一化)\n', main_lobe_width);
+            fprintf('   最大旁瓣:     %.2f dB\n', sidelobe_level);
 
             % 绘图
             figure('Name', sprintf('Window Analysis: %s', win_type));

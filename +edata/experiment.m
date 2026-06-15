@@ -239,7 +239,7 @@ classdef experiment
                         obj.results.peaks{i} = result;
                 end
 
-                fprintf('   [%d/%d] 已分析\n", i, numel(obj.processed_data));
+                fprintf('   [%d/%d] 已分析\n', i, numel(obj.processed_data));
             end
 
             fprintf('✅ 分析完成\n');
@@ -321,8 +321,8 @@ classdef experiment
             fprintf('   文件数: %d\n', summary.n_files);
             fprintf('   已处理: %d\n', summary.n_processed);
             if isfield(summary, 'n_channels')
-                fprintf('   通道数: %d\n", summary.n_channels);
-                fprintf('   采样点: %d\n", summary.n_samples);
+                fprintf('   通道数: %d\n', summary.n_channels);
+                fprintf('   采样点: %d\n', summary.n_samples);
             end
         end
     end

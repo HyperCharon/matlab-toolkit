@@ -76,7 +76,7 @@ classdef templates
                 '%% 5. 性能指标'
                 'info = stepinfo(sys_closed);'
                 'fprintf(''\\n性能指标:\\n'');'
-                fprintf(''   超调量: %.2f%%\\n'', info.Overshoot);'
+                'fprintf(''   超调量: %.2f%%\\n'', info.Overshoot);'
                 'fprintf(''   调节时间: %.4f s\\n'', info.SettlingTime);'
                 'fprintf(''   上升时间: %.4f s\\n'', info.RiseTime);'
                 'fprintf(''   峰值时间: %.4f s\\n'', info.PeakTime);'

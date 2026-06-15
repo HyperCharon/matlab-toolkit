@@ -231,8 +231,16 @@ function export_fig(fig, filename, cfg, varargin)
     pos = get(fig, 'Position');
     set(fig, 'PaperSize', [pos(3) pos(4)]);
 
+    % 确定渲染器格式
+    switch lower(cfg.export_format)
+        case {'pdf', 'eps', 'svg'}
+            renderer = '-painters';
+        otherwise
+            renderer = '-opengl';
+    end
+
     % 导出
-    print(fig, filename, ['-d' cfg.export_format(1:end)], ...
+    print(fig, filename, ['-d' cfg.export_format], renderer, ...
         ['-r' num2str(cfg.dpi)]);
 
     fprintf('   已导出: %s\n', filename);
