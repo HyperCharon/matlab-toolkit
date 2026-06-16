@@ -36,6 +36,9 @@ end
 function generate_html_report(results, opts)
     filename = fullfile(opts.output, opts.filename + ".html");
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('ebatch:export_report:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '<!DOCTYPE html>\n<html>\n<head>\n');
     fprintf(fid, '<meta charset="UTF-8">\n');
@@ -135,6 +138,9 @@ end
 function generate_markdown_report(results, opts)
     filename = fullfile(opts.output, opts.filename + ".md");
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('ebatch:export_report:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '# 📊 MatForge 批量仿真报告\n\n');
     fprintf(fid, '- **模型:** %s\n', results.model);
@@ -183,6 +189,9 @@ end
 function generate_latex_report(results, opts)
     filename = fullfile(opts.output, opts.filename + ".tex");
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('ebatch:export_report:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '\\documentclass{article}\n');
     fprintf(fid, '\\usepackage{booktabs}\n');

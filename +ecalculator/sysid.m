@@ -320,6 +320,22 @@ classdef sysid
             info.t_rise = t_rise;
             info.t_settle = t_settle;
         end
+
+        function order = model_order(u, y, max_order)
+        %MODEL_ORDER 模型阶次选择
+        %
+        %   order = ecalculator.sysid.model_order(u, y, 10)
+        %
+        %   基于拟合度选择最佳 ARX 模型阶次
+
+            if nargin < 3, max_order = 10; end
+
+            data = iddata(y, u, 1);
+            order = select_order(data, max_order);
+
+            fprintf('📊 模型阶次选择:\n');
+            fprintf('   最佳阶次: %d\n', order);
+        end
     end
 end
 

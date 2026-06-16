@@ -66,12 +66,18 @@ function export_params(model_name, varargin)
             filepath = fullfile(opts.output, opts.filename + ".json");
             json_text = jsonencode(params, 'PrettyPrint', true);
             fid = fopen(filepath, 'w');
+            if fid == -1
+                error('esimulink:export_params:fileOpen', '无法打开文件: %s', filepath);
+            end
             fprintf(fid, '%s', json_text);
             fclose(fid);
 
         case 'markdown'
             filepath = fullfile(opts.output, opts.filename + ".md");
             fid = fopen(filepath, 'w');
+            if fid == -1
+                error('esimulink:export_params:fileOpen', '无法打开文件: %s', filepath);
+            end
             fprintf(fid, '# %s - 模型参数\n\n', model_name);
             fprintf(fid, '| 参数名 | 模块 | 类型 | 当前值 | 描述 |\n');
             fprintf(fid, '|--------|------|------|--------|------|\n');
@@ -148,7 +154,8 @@ function params = get_tunable_params(model_name)
 
     % 去重
     if ~isempty(params)
-        [~, idx] = unique({params.name, params.block}, 'rows');
+        name_block = [{params.name}', {params.block}'];
+        [~, idx] = unique(name_block, 'rows');
         params = params(idx);
     end
 end

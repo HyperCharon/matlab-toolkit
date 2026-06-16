@@ -60,6 +60,9 @@ function generate_docs(model_name, varargin)
             generate_markdown(model_name, info, opts);
         case 'latex'
             generate_latex(model_name, info, opts);
+        otherwise
+            error('esimulink:generate_docs:unknownFormat', ...
+                '不支持的格式: %s (支持: html, markdown, latex)', opts.format);
     end
 
     fprintf('✅ 文档生成完成: %s/\n', opts.output);
@@ -126,6 +129,9 @@ end
 function generate_html(model_name, info, opts)
     filename = fullfile(opts.output, sprintf('%s_docs.html', model_name));
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('esimulink:generate_docs:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '<!DOCTYPE html>\n<html>\n<head>\n');
     fprintf(fid, '<meta charset="UTF-8">\n');
@@ -192,6 +198,9 @@ end
 function generate_markdown(model_name, info, opts)
     filename = fullfile(opts.output, sprintf('%s_docs.md', model_name));
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('esimulink:generate_docs:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '# %s - Simulink 模型文档\n\n', model_name);
     fprintf(fid, '%s\n\n', info.description);
@@ -227,6 +236,9 @@ end
 function generate_latex(model_name, info, opts)
     filename = fullfile(opts.output, sprintf('%s_docs.tex', model_name));
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('esimulink:generate_docs:fileOpen', '无法打开文件: %s', filename);
+    end
 
     fprintf(fid, '\\documentclass{article}\n');
     fprintf(fid, '\\usepackage{graphicx}\n');

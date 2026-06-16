@@ -476,5 +476,122 @@ classdef vibration
             info.time = t_env;
             info.window_size = window_size;
         end
+
+        function info = modal_analysis(frfs, freqs, varargin)
+        %MODAL_ANALYSIS 模态分析
+        %
+        %   info = ecalculator.vibration.modal_analysis(frfs, freqs)
+        %
+        %   从 FRF 数据识别模态参数（固有频率、阻尼比、振型）
+        %
+        %   输入:
+        %     frfs  - FRF 矩阵 (n_freqs x n_points)
+        %     freqs - 频率向量 (Hz)
+
+            opts = struct('n_modes', 3, 'plot', true);
+            for i = 1:2:numel(varargin)
+                opts.(varargin{i}) = varargin{i+1};
+            end
+
+            n_freqs = numel(freqs);
+            n_points = size(frfs, 2);
+
+            % 使用峰值拾取法识别模态
+            natural_freqs = zeros(opts.n_modes, 1);
+            damping_ratios = zeros(opts.n_modes, 1);
+            mode_shapes = zeros(n_points, opts.n_modes);
+
+            % 对每个 FRF 找峰值
+            all_peaks = [];
+            for p = 1:n_points
+                frf_mag = abs(frfs(:, p));
+                [pks, locs] = findpeaks(frf_mag, 'SortStr', 'descend', ...
+                    'NPeaks', opts.n_modes * 2);
+                all_peaks = [all_peaks; locs(:)];
+            end
+
+            % 聚类峰值位置
+            if numel(all_peaks) >= opts.n_modes
+                [cluster_idx, cluster_centers] = kmeans(all_peaks, opts.n_modes, ...
+                    'Replicates', 5);
+
+                for m = 1:opts.n_modes
+                    % 固有频率
+                    peak_idx = round(cluster_centers(m));
+                    peak_idx = max(1, min(n_freqs, peak_idx));
+                    natural_freqs(m) = freqs(peak_idx);
+
+                    % 半功率带宽法估算阻尼比
+                    for p = 1:n_points
+                        frf_mag = abs(frfs(:, p));
+                        peak_val = frf_mag(peak_idx);
+                        half_power = peak_val / sqrt(2);
+
+                        % 找半功率点
+                        below = find(frf_mag(1:peak_idx) < half_power, 1, 'last');
+                        above = find(frf_mag(peak_idx:end) < half_power, 1) + peak_idx - 1;
+
+                        if ~isempty(below) && ~isempty(above)
+                            f1 = freqs(below);
+                            f2 = freqs(above);
+                            damping_ratios(m) = (f2 - f1) / (2 * natural_freqs(m));
+                        end
+                    end
+
+                    % 振型
+                    for p = 1:n_points
+                        frf_mag = abs(frfs(:, p));
+                        mode_shapes(p, m) = frf_mag(peak_idx);
+                    end
+
+                    % 归一化振型
+                    mode_shapes(:, m) = mode_shapes(:, m) / max(abs(mode_shapes(:, m)));
+                end
+            end
+
+            fprintf('📊 模态分析结果:\n');
+            fprintf('   识别模态数: %d\n', opts.n_modes);
+            fprintf('   测点数:     %d\n', n_points);
+            for m = 1:opts.n_modes
+                fprintf('   ───── 模态 %d ─────\n', m);
+                fprintf('   固有频率:   %.2f Hz\n', natural_freqs(m));
+                fprintf('   阻尼比:     %.4f (%.2f%%)\n', ...
+                    damping_ratios(m), damping_ratios(m)*100);
+            end
+
+            % 绘图
+            if opts.plot
+                figure('Name', 'Modal Analysis');
+
+                % FRF 叠加图
+                subplot(2,1,1);
+                hold on;
+                for p = 1:n_points
+                    plot(freqs, 20*log10(abs(frfs(:, p))), 'LineWidth', 0.5);
+                end
+                for m = 1:opts.n_modes
+                    xline(natural_freqs(m), 'r--', sprintf('Mode %d', m), ...
+                        'LineWidth', 1.5, 'LabelVerticalAlignment', 'bottom');
+                end
+                xlabel('Frequency (Hz)');
+                ylabel('Magnitude (dB)');
+                title('FRF Overlay with Identified Modes');
+                grid on;
+
+                % 振型图
+                subplot(2,1,2);
+                bar(mode_shapes, 'grouped');
+                xlabel('Measurement Point');
+                ylabel('Normalized Amplitude');
+                title('Mode Shapes');
+                legend(arrayfun(@(m) sprintf('Mode %d', m), 1:opts.n_modes, ...
+                    'UniformOutput', false), 'Location', 'best');
+                grid on;
+            end
+
+            info.natural_freqs = natural_freqs;
+            info.damping_ratios = damping_ratios;
+            info.mode_shapes = mode_shapes;
+        end
     end
 end

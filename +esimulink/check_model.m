@@ -162,7 +162,9 @@ function issues = check_unused_variables(model_name)
                     'block', '');
             end
         end
-    catch
+    catch ME
+        warning('esimulink:check_model:workspaceCheckFailed', ...
+            '工作区变量检查失败: %s', ME.message);
     end
 end
 
@@ -170,7 +172,6 @@ function issues = check_solver_settings(model_name)
     issues = {};
 
     solver = get_param(model_name, 'Solver');
-    step = get_param(model_name, 'FixedStep');
 
     % 检查是否使用固定步长求解器
     if contains(solver, 'ode') && ~contains(solver, 'Fixed')

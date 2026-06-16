@@ -25,7 +25,7 @@ function results = sweep(model, varargin)
 %     results - 结构体，包含参数组合和对应的仿真结果
 %
 %   示例:
-%     results = ebatch.sump('motor_control', ...
+%     results = ebatch.sweep('motor_control', ...
 %         'Kp', [0.5 1 2 5], ...
 %         'Ki', [0.1 0.5 1], ...
 %         'parallel', true, ...
@@ -35,7 +35,7 @@ function results = sweep(model, varargin)
 
     % 解析输入参数
     opts = struct('parallel', false, 'metrics', {{'overshoot', 'settling_time'}}, ...
-                  'output', 'ebatch_results', 'timeout', 60);
+                  'output', 'ebatch_results', 'timeout', 60, 'reference', 1);
     params = struct();
     param_names = {};
     param_values = {};
@@ -146,7 +146,7 @@ function results = sweep(model, varargin)
                 sim_out = sim(model, 'Timeout', opts.timeout);
 
                 % 提取指标
-                metrics = extract_metrics(sim_out, opts.metrics);
+                metrics = extract_metrics(sim_out, opts.metrics, opts);
                 for m = 1:numel(opts.metrics)
                     metric_results.(opts.metrics{m})(idx) = metrics.(opts.metrics{m});
                 end
@@ -173,7 +173,7 @@ function results = sweep(model, varargin)
     fprintf('💾 结果已保存到: %s/sweep_results.mat\n', opts.output);
 end
 
-function metrics = extract_metrics(sim_out, metric_names)
+function metrics = extract_metrics(sim_out, metric_names, opts)
     metrics = struct();
     y = sim_out.yout;
     t = sim_out.tout;
@@ -227,8 +227,7 @@ function metrics = extract_metrics(sim_out, metric_names)
             case 'steady_state_error'
                 if ~isempty(y)
                     y_data = y{1}.Values.Data;
-                    reference = 1;  % 假设参考值为 1
-                    metrics.steady_state_error = abs(reference - y_data(end));
+                    metrics.steady_state_error = abs(opts.reference - y_data(end));
                 else
                     metrics.steady_state_error = NaN;
                 end
@@ -252,8 +251,7 @@ function metrics = extract_metrics(sim_out, metric_names)
                 if ~isempty(y)
                     y_data = y{1}.Values.Data;
                     t_data = t;
-                    reference = 1;
-                    error_signal = reference - y_data;
+                    error_signal = opts.reference - y_data;
                     metrics.iae = trapz(t_data, abs(error_signal));
                 else
                     metrics.iae = NaN;
@@ -264,8 +262,7 @@ function metrics = extract_metrics(sim_out, metric_names)
                 if ~isempty(y)
                     y_data = y{1}.Values.Data;
                     t_data = t;
-                    reference = 1;
-                    error_signal = reference - y_data;
+                    error_signal = opts.reference - y_data;
                     metrics.ise = trapz(t_data, error_signal.^2);
                 else
                     metrics.ise = NaN;
@@ -293,8 +290,8 @@ function metrics = run_single_sim(model, param_names, grid_values, idx, opts)
     % 运行仿真
     try
         sim_out = sim(model, 'Timeout', opts.timeout);
-        metrics = extract_metrics(sim_out, opts.metrics);
-    catch
-        % 保持 NaN 值
+        metrics = extract_metrics(sim_out, opts.metrics, opts);
+    catch ME
+        warning('ebatch:sweep:simFailed', '仿真失败: %s', ME.message);
     end
 end

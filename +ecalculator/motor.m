@@ -52,20 +52,20 @@ classdef motor
             fprintf('⚡ 直流电机分析:\n');
             fprintf('   ───── 额定参数 ─────\n');
             fprintf('   额定电压:     %.1f V\n', V);
-            fprintf('   电枢电阻:     %s\n', format_resistance(Ra));
-            fprintf('   电枢电感:     %s\n', format_inductance(La));
+            fprintf('   电枢电阻:     %s\n', eutils.formatters.resistance(Ra));
+            fprintf('   电枢电感:     %s\n', eutils.formatters.inductance(La));
             fprintf('   反电动势常数: %.4f V·s/rad\n', Ke);
             fprintf('   转矩常数:     %.4f N·m/A\n', Kt);
-            fprintf('   转动惯量:     %s\n', format_inertia(J));
+            fprintf('   转动惯量:     %s\n', eutils.formatters.inertia(J));
             fprintf('   摩擦系数:     %.2e N·m·s/rad\n', B);
             fprintf('   ───── 性能指标 ─────\n');
-            fprintf('   堵转电流:     %s\n', format_current(I_stall));
-            fprintf('   堵转转矩:     %s\n', format_torque(T_stall));
+            fprintf('   堵转电流:     %s\n', eutils.formatters.current(I_stall));
+            fprintf('   堵转转矩:     %s\n', eutils.formatters.torque(T_stall));
             fprintf('   空载转速:     %d RPM (%.2f rad/s)\n', round(RPM_no_load), w_no_load);
-            fprintf('   最大功率:     %s @ %d RPM\n', format_power(P_max_power), round(RPM_no_load/2));
+            fprintf('   最大功率:     %s @ %d RPM\n', eutils.formatters.power(P_max_power), round(RPM_no_load/2));
             fprintf('   ───── 时间常数 ─────\n');
-            fprintf('   电气时间常数: %s\n', format_time(tau_e));
-            fprintf('   机械时间常数: %s\n', format_time(tau_m));
+            fprintf('   电气时间常数: %s\n', eutils.formatters.time(tau_e));
+            fprintf('   机械时间常数: %s\n', eutils.formatters.time(tau_m));
 
             % 绘制特性曲线
             fig = figure('Name', 'DC Motor Characteristics');
@@ -158,22 +158,22 @@ classdef motor
             fprintf('🔧 FOC 控制参数:\n');
             fprintf('   ───── 电机参数 ─────\n');
             fprintf('   极对数:       %d\n', params.p);
-            fprintf('   Rs:           %s\n', format_resistance(params.Rs));
-            fprintf('   Ld:           %s\n', format_inductance(params.Ld));
-            fprintf('   Lq:           %s\n', format_inductance(params.Lq));
+            fprintf('   Rs:           %s\n', eutils.formatters.resistance(params.Rs));
+            fprintf('   Ld:           %s\n', eutils.formatters.inductance(params.Ld));
+            fprintf('   Lq:           %s\n', eutils.formatters.inductance(params.Lq));
             fprintf('   Ke:           %.4f V·s/rad\n', params.Ke);
             fprintf('   ───── 工作点 ─────\n');
             fprintf('   转速:         %d RPM\n', speed_ref);
             fprintf('   电角速度:     %.2f rad/s\n', we);
             fprintf('   最大相电压:   %.2f V\n', Vmax);
             fprintf('   ───── 电流环 ─────\n');
-            fprintf('   带宽:         %s\n', format_frequency(bw_current));
+            fprintf('   带宽:         %s\n', eutils.formatters.frequency(bw_current));
             fprintf('   Kp_d:         %.6f\n', Kp_d);
             fprintf('   Ki_d:         %.6f\n', Ki_d);
             fprintf('   Kp_q:         %.6f\n', Kp_q);
             fprintf('   Ki_q:         %.6f\n', Ki_q);
             fprintf('   ───── 速度环 ─────\n');
-            fprintf('   带宽:         %s\n', format_frequency(bw_speed));
+            fprintf('   带宽:         %s\n', eutils.formatters.frequency(bw_speed));
 
             % MTPA 计算
             Is_max = torque_ref / (1.5 * params.p * params.Ke);
@@ -209,7 +209,7 @@ classdef motor
 
             fprintf('🌡️  电机热模型:\n');
             fprintf('   环境温度:     %.1f °C\n', Ta);
-            fprintf('   功耗:         %s\n', format_power(Ploss));
+            fprintf('   功耗:         %s\n', eutils.formatters.power(Ploss));
             fprintf('   结到环境热阻: %.1f °C/W\n', Rth_ja);
             fprintf('   结到壳热阻:   %.1f °C/W\n', Rth_jc);
             fprintf('   结温:         %.1f °C\n', Tj);
@@ -227,55 +227,61 @@ classdef motor
             info.Tc = Tc;
             info.margin = 150 - Tj;
         end
+
+        function info = pmsm_params(Vdc, Rs, Ld, Lq, Ke)
+        %PMSM_PARAMS 永磁同步电机参数分析
+        %
+        %   ecalculator.motor.pmsm_params(48, 0.5, 1e-3, 1.2e-3, 0.05)
+        %
+        %   参数:
+        %     Vdc - 直流母线电压 (V)
+        %     Rs  - 定子电阻 (Ω)
+        %     Ld  - d 轴电感 (H)
+        %     Lq  - q 轴电感 (H)
+        %     Ke  - 反电动势常数 (V·s/rad)
+
+            % 最大相电压
+            Vmax = Vdc / sqrt(3);
+
+            % 最大电流 (假设)
+            Imax = Vmax / sqrt(Rs^2 + (2*pi*1000*Lq)^2);
+
+            % 最大转矩
+            p = 4;  % 假设 4 极对数
+            Tmax = 1.5 * p * Ke * Imax;
+
+            % 最大转速
+            wmax = Vmax / Ke;
+            RPMmax = wmax * 60 / (2*pi);
+
+            % 特征频率
+            f_d = Rs / (2*pi*Ld);
+            f_q = Rs / (2*pi*Lq);
+
+            fprintf('🔧 PMSM 参数分析:\n');
+            fprintf('   ───── 电气参数 ─────\n');
+            fprintf('   母线电压:   %.1f V\n', Vdc);
+            fprintf('   最大相电压: %.2f V\n', Vmax);
+            fprintf('   Rs:         %s\n', eutils.formatters.resistance(Rs));
+            fprintf('   Ld:         %s\n', eutils.formatters.inductance(Ld));
+            fprintf('   Lq:         %s\n', eutils.formatters.inductance(Lq));
+            fprintf('   Ke:         %.4f V·s/rad\n', Ke);
+            fprintf('   ───── 性能指标 ─────\n');
+            fprintf('   最大电流:   %s\n', eutils.formatters.current(Imax));
+            fprintf('   最大转矩:   %s\n', eutils.formatters.torque(Tmax));
+            fprintf('   最大转速:   %d RPM\n', round(RPMmax));
+            fprintf('   ───── 特征频率 ─────\n');
+            fprintf('   d 轴频率:   %s\n', eutils.formatters.frequency(f_d));
+            fprintf('   q 轴频率:   %s\n', eutils.formatters.frequency(f_q));
+
+            info.Vmax = Vmax;
+            info.Imax = Imax;
+            info.Tmax = Tmax;
+            info.wmax = wmax;
+            info.RPMmax = RPMmax;
+            info.f_d = f_d;
+            info.f_q = f_q;
+        end
     end
 end
 
-% 格式化函数
-function s = format_resistance(R)
-    if R >= 1e6, s = sprintf('%.2f MΩ', R/1e6);
-    elseif R >= 1e3, s = sprintf('%.2f kΩ', R/1e3);
-    else, s = sprintf('%.3f Ω', R); end
-end
-
-function s = format_inductance(L)
-    if L >= 1, s = sprintf('%.2f H', L);
-    elseif L >= 1e-3, s = sprintf('%.2f mH', L*1e3);
-    elseif L >= 1e-6, s = sprintf('%.2f μH', L*1e6);
-    else, s = sprintf('%.2f nH', L*1e9); end
-end
-
-function s = format_inertia(J)
-    if J >= 1e-3, s = sprintf('%.4f kg·m²', J);
-    elseif J >= 1e-6, s = sprintf('%.4f g·cm²', J*1e7);
-    else, s = sprintf('%.4f mg·cm²', J*1e10); end
-end
-
-function s = format_current(I)
-    if I >= 1, s = sprintf('%.3f A', I);
-    elseif I >= 1e-3, s = sprintf('%.3f mA', I*1e3);
-    else, s = sprintf('%.3f μA', I*1e6); end
-end
-
-function s = format_torque(T)
-    if T >= 1, s = sprintf('%.4f N·m', T);
-    elseif T >= 1e-3, s = sprintf('%.4f mN·m', T*1e3);
-    else, s = sprintf('%.4f μN·m', T*1e6); end
-end
-
-function s = format_power(P)
-    if P >= 1, s = sprintf('%.2f W', P);
-    elseif P >= 1e-3, s = sprintf('%.2f mW', P*1e3);
-    else, s = sprintf('%.2f μW', P*1e6); end
-end
-
-function s = format_frequency(f)
-    if f >= 1e6, s = sprintf('%.2f MHz', f/1e6);
-    elseif f >= 1e3, s = sprintf('%.2f kHz', f/1e3);
-    else, s = sprintf('%.2f Hz', f); end
-end
-
-function s = format_time(t)
-    if t >= 1, s = sprintf('%.4f s', t);
-    elseif t >= 1e-3, s = sprintf('%.4f ms', t*1e3);
-    else, s = sprintf('%.4f μs', t*1e6); end
-end

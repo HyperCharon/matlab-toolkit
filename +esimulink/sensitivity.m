@@ -90,12 +90,23 @@ function results = sensitivity(model_name, param_name, variations, metric, varar
     if sum(valid_idx) >= 2
         % 线性拟合
         p = polyfit(variations(valid_idx), metric_values(valid_idx), 1);
-        sensitivity_coeff = p(1) * opts.nominal / mean(metric_values(valid_idx));
+        mean_val = mean(metric_values(valid_idx));
+        if abs(mean_val) < eps
+            sensitivity_coeff = NaN;
+        else
+            sensitivity_coeff = p(1) * opts.nominal / mean_val;
+        end
 
-        % 归一化灵敏度
-        delta_param = (variations(end) - variations(1)) / opts.nominal;
-        delta_metric = (metric_values(end) - metric_values(1)) / mean(metric_values(valid_idx));
-        normalized_sensitivity = delta_metric / delta_param;
+        % 归一化灵敏度 (使用有效数据点的首尾)
+        valid_variations = variations(valid_idx);
+        valid_metrics = metric_values(valid_idx);
+        delta_param = (valid_variations(end) - valid_variations(1)) / opts.nominal;
+        if abs(mean_val) < eps || delta_param == 0
+            normalized_sensitivity = NaN;
+        else
+            delta_metric = (valid_metrics(end) - valid_metrics(1)) / mean_val;
+            normalized_sensitivity = delta_metric / delta_param;
+        end
     else
         sensitivity_coeff = NaN;
         normalized_sensitivity = NaN;

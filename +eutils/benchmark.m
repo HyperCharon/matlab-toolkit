@@ -61,7 +61,11 @@ function results = run_single(func, opts)
             else
                 func_handle(opts.inputs{:});
             end
-        catch
+        catch ME
+            if i == 1
+                warning('eutils:benchmark:warmupFailed', ...
+                    '预热失败: %s', ME.message);
+            end
         end
     end
 

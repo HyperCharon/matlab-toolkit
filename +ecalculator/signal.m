@@ -63,10 +63,10 @@ classdef signal
             thd_val = calculate_thd(magnitude, f, peak_freq);
 
             fprintf('📊 FFT 分析结果:\n');
-            fprintf('   采样率:     %s\n', format_frequency(Fs));
+            fprintf('   采样率:     %s\n', eutils.formatters.frequency(Fs));
             fprintf('   采样点数:   %d\n', N);
-            fprintf('   频率分辨率: %s\n', format_frequency(Fs/nfft));
-            fprintf('   主频率:     %s\n', format_frequency(peak_freq));
+            fprintf('   频率分辨率: %s\n', eutils.formatters.frequency(Fs/nfft));
+            fprintf('   主频率:     %s\n', eutils.formatters.frequency(peak_freq));
             fprintf('   主幅值:     %.6f\n', peak_amp);
             fprintf('   THD:        %.2f%%\n', thd_val * 100);
 
@@ -149,8 +149,8 @@ classdef signal
             fprintf('🎛️  %s 滤波器设计:\n', filter_type);
             fprintf('   阶数:       %d\n', N);
             fprintf('   类型:       %s\n', spec.type);
-            fprintf('   通带频率:   %s\n', format_frequency(spec.Fpass));
-            fprintf('   阻带频率:   %s\n', format_frequency(spec.Fstop));
+            fprintf('   通带频率:   %s\n', eutils.formatters.frequency(spec.Fpass));
+            fprintf('   阻带频率:   %s\n', eutils.formatters.frequency(spec.Fstop));
             fprintf('   通带纹波:   %.2f dB\n', spec.Apass);
             fprintf('   阻带衰减:   %.2f dB\n', spec.Astop);
 
@@ -175,9 +175,9 @@ classdef signal
             ratio = Fs / fmax;
 
             fprintf('📐 采样定理检查:\n');
-            fprintf('   信号最高频率: %s\n', format_frequency(fmax));
-            fprintf('   采样率:       %s\n', format_frequency(Fs));
-            fprintf('   奈奎斯特频率: %s\n', format_frequency(nyquist));
+            fprintf('   信号最高频率: %s\n', eutils.formatters.frequency(fmax));
+            fprintf('   采样率:       %s\n', eutils.formatters.frequency(Fs));
+            fprintf('   奈奎斯特频率: %s\n', eutils.formatters.frequency(nyquist));
             fprintf('   采样率/信号频率: %.1f\n', ratio);
 
             if Fs >= nyquist
@@ -192,15 +192,15 @@ classdef signal
                 end
             else
                 fprintf('   ❌ 不满足采样定理! 将发生混叠\n');
-                fprintf('   最低采样率: %s\n', format_frequency(nyquist));
-                fprintf('   需要提高:   %s\n', format_frequency(nyquist - Fs));
+                fprintf('   最低采样率: %s\n', eutils.formatters.frequency(nyquist));
+                fprintf('   需要提高:   %s\n', eutils.formatters.frequency(nyquist - Fs));
             end
 
             % 计算抗混叠滤波器参数
             f_alias = Fs - fmax;
             fprintf('\n   抗混叠滤波器建议:\n');
-            fprintf('   通带截止:   %s\n', format_frequency(fmax));
-            fprintf('   阻带起始:   %s\n', format_frequency(f_alias));
+            fprintf('   通带截止:   %s\n', eutils.formatters.frequency(fmax));
+            fprintf('   阻带起始:   %s\n', eutils.formatters.frequency(f_alias));
 
             info.valid = Fs >= nyquist;
             info.ratio = ratio;
@@ -246,23 +246,12 @@ classdef signal
             val = sqrt(harmonics) / A0;
 
             fprintf('🔊 总谐波失真:\n');
-            fprintf('   基波频率: %s\n', format_frequency(f0));
+            fprintf('   基波频率: %s\n', eutils.formatters.frequency(f0));
             fprintf('   THD:      %.4f%%\n', val * 100);
         end
     end
 end
 
-function s = format_frequency(f)
-    if f >= 1e9
-        s = sprintf('%.2f GHz', f/1e9);
-    elseif f >= 1e6
-        s = sprintf('%.2f MHz', f/1e6);
-    elseif f >= 1e3
-        s = sprintf('%.2f kHz', f/1e3);
-    else
-        s = sprintf('%.2f Hz', f);
-    end
-end
 
 function val = calculate_thd(magnitude, f, f0)
     if f0 == 0
