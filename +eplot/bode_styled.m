@@ -60,8 +60,9 @@ function fig = bode_styled(sys, varargin)
 
     % 标注带宽
     if opts.show_bandwidth
-        % 找到 -3dB 带宽
-        idx_bw = find(mag_dB <= mag_dB(1) - 3, 1);
+        % 找到 -3dB 带宽 (相对于峰值)
+        peak_dB = max(mag_dB);
+        idx_bw = find(mag_dB <= peak_dB - 3, 1);
         if ~isempty(idx_bw)
             Wbw = wout(idx_bw);
             semilogx(Wbw, mag_dB(idx_bw), 'gs', 'MarkerSize', 8, 'LineWidth', 2);

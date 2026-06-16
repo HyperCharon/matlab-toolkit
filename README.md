@@ -142,10 +142,10 @@ ecalculator.material.fatigue(200, 150, 500);            % 疲劳分析
 
 #### 通信工程
 ```matlab
-ecalculator.communications.snr_db(100, 1);              % 信噪比
-ecalculator.communications.ber_bpsk(10);                % BPSK BER
-ecalculator.communications.link_budget(20, 10, 10, 3, 1000, 2.4e9);
-ecalculator.communications.channel_capacity(20, 10e6);  % Shannon 容量
+info = ecalculator.communications.snr_db(100, 1);        % 信噪比
+info = ecalculator.communications.ber_bpsk(10);          % BPSK BER
+info = ecalculator.communications.link_budget(20, 10, 10, 3, 1000, 2.4e9);
+info = ecalculator.communications.channel_capacity(20, 10e6);  % Shannon 容量
 ```
 
 #### 电力电子

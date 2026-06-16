@@ -208,25 +208,29 @@ classdef signal
             info.f_alias = f_alias;
         end
 
-        function val = snr(signal, noise)
+        function info = snr(signal, noise)
         %SNR 信噪比计算
         %
-        %   ecalculator.signal.snr(signal_data, noise_data)
+        %   info = ecalculator.signal.snr(signal_data, noise_data)
 
             P_signal = rms(signal)^2;
             P_noise = rms(noise)^2;
-            val = 10*log10(P_signal / P_noise);
+            snr_dB = 10*log10(P_signal / P_noise);
 
             fprintf('📡 信噪比:\n');
             fprintf('   信号功率: %.6f\n', P_signal);
             fprintf('   噪声功率: %.6f\n', P_noise);
-            fprintf('   SNR:      %.2f dB\n', val);
+            fprintf('   SNR:      %.2f dB\n', snr_dB);
+
+            info.P_signal = P_signal;
+            info.P_noise = P_noise;
+            info.snr_dB = snr_dB;
         end
 
-        function val = thd(x, Fs, f0)
+        function info = thd(x, Fs, f0)
         %THD 总谐波失真
         %
-        %   ecalculator.signal.thd(x, 44100, 1000)
+        %   info = ecalculator.signal.thd(x, 44100, 1000)
 
             N = numel(x);
             X = abs(fft(x)) / N;
@@ -238,16 +242,24 @@ classdef signal
 
             % 计算谐波
             harmonics = 0;
+            harmonic_amps = zeros(9, 1);
             for k = 2:10
                 [~, idx] = min(abs(f - k*f0));
+                harmonic_amps(k-1) = X(idx);
                 harmonics = harmonics + X(idx)^2;
             end
 
-            val = sqrt(harmonics) / A0;
+            thd_val = sqrt(harmonics) / A0;
 
             fprintf('🔊 总谐波失真:\n');
             fprintf('   基波频率: %s\n', eutils.formatters.frequency(f0));
-            fprintf('   THD:      %.4f%%\n', val * 100);
+            fprintf('   THD:      %.4f%%\n', thd_val * 100);
+
+            info.f0 = f0;
+            info.A0 = A0;
+            info.harmonic_amps = harmonic_amps;
+            info.thd = thd_val;
+            info.thd_percent = thd_val * 100;
         end
     end
 end

@@ -61,7 +61,7 @@ classdef fluid
             dP = f * (L/D) * (rho * v^2 / 2);
 
             % 沿程损失
-            hf = dP / (rho * 9.81);
+            hf = dP / (rho * eutils.constants.g);
 
             fprintf('🔧 管道流动计算:\n');
             fprintf('   直径:       %.4f m\n', D);
@@ -146,7 +146,7 @@ classdef fluid
         %   ecalculator.fluid.bernoulli(101325, 1, 0, 0, 0, 1, 1000)
 
             if nargin < 7, rho = 1000; end
-            g = 9.81;
+            g = eutils.constants.g;
 
             % 总压头
             H1 = P1/(rho*g) + v1^2/(2*g) + z1;

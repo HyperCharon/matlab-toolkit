@@ -65,7 +65,7 @@ classdef thermal
         %     A       - 面积 (m²)
         %     T1, T2  - 温度 (K)
 
-            sigma = 5.67e-8;  % 斯蒂芬-玻尔兹曼常数
+            sigma = eutils.constants.sigma;
             Q = epsilon * sigma * A * (T1^4 - T2^4);
 
             fprintf('☀️  辐射换热计算:\n');

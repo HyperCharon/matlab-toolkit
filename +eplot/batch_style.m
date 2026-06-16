@@ -23,14 +23,16 @@ function batch_style(input_dir, preset, varargin)
     opts = struct('save', true, 'export', false, 'format', 'pdf');
     custom_args = {};
     i = 1;
-    while i <= numel(varargin)
+    while i + 1 <= numel(varargin)
         if isfield(opts, varargin{i})
             opts.(varargin{i}) = varargin{i+1};
-            i = i + 2;
         else
             custom_args = [custom_args varargin(i:i+1)];
-            i = i + 2;
         end
+        i = i + 2;
+    end
+    if i == numel(varargin)
+        warning('eplot:batch_style:oddArgs', '参数 "%s" 缺少对应的值', varargin{i});
     end
 
     % 查找 .fig 文件

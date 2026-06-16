@@ -106,21 +106,3 @@ function fig = compare_step(systems, varargin)
         eplot.style(fig, opts.style);
     end
 end
-
-function colors = get_default_colors(n)
-    base = [
-        0.00 0.45 0.74;
-        0.85 0.33 0.10;
-        0.00 0.60 0.50;
-        0.93 0.69 0.13;
-        0.49 0.18 0.56;
-        0.47 0.67 0.19;
-        0.30 0.60 0.85;
-        0.80 0.20 0.40;
-    ];
-    if n <= size(base, 1)
-        colors = base(1:n, :);
-    else
-        colors = hsv(n);
-    end
-end
