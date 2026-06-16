@@ -1,0 +1,28 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# MATLAB files
+*.m text
+*.mat binary
+*.slx binary
+*.mdl text
+*.fig binary
+
+# Documentation
+*.md text
+*.txt text
+*.html text
+*.css text
+*.tex text
+
+# Data files
+*.csv text
+*.json text
+*.xml text
+
+# Binary files
+*.pdf binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.eps binary

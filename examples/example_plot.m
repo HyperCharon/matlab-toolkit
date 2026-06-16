@@ -90,15 +90,15 @@ if ~exist('output_figures', 'dir')
 end
 
 % 导出为 PDF
-eplot.export(fig1, 'output_figures/sin_cos_ieee.pdf', 'dpi', 600);
+eplot.export(fig1, fullfile('output_figures', 'sin_cos_ieee.pdf'), 'dpi', 600);
 fprintf('✅ 已导出 PDF\n');
 
 % 导出为 PNG
-eplot.export(fig1, 'output_figures/sin_cos_ieee.png', 'dpi', 300);
+eplot.export(fig1, fullfile('output_figures', 'sin_cos_ieee.png'), 'dpi', 300);
 fprintf('✅ 已导出 PNG\n');
 
 % 导出为 EPS (用于 LaTeX)
-eplot.export(fig1, 'output_figures/sin_cos_ieee.eps', 'dpi', 600);
+eplot.export(fig1, fullfile('output_figures', 'sin_cos_ieee.eps'), 'dpi', 600);
 fprintf('✅ 已导出 EPS\n');
 
 %% 6. 高级功能
@@ -128,7 +128,7 @@ text(1, 1.5, sprintf('SNR = %.1f dB', 10*log10(var(sin(2*pi*t)) / var(y_noise - 
 eplot.style(fig5, 'ieee');
 
 % 导出
-eplot.export(fig5, 'output_figures/smoothing_example.pdf');
+eplot.export(fig5, fullfile('output_figures', 'smoothing_example.pdf'));
 fprintf('✅ 高级功能示例完成\n');
 
 fprintf('\n🎉 所有示例完成!\n');

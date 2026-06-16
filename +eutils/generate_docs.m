@@ -20,7 +20,7 @@ function generate_docs(project_root, varargin)
 %
 %   See also eutils.init_project, eutils.package_toolbox
 
-    opts = struct('format', 'markdown', 'output', 'docs/', 'name', '');
+    opts = struct('format', 'markdown', 'output', 'docs', 'name', '');
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end
