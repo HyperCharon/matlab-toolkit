@@ -19,7 +19,7 @@
 | 模块 | 功能 | 函数数 |
 |------|------|--------|
 | 🎨 **eplot** | 出图美化、配色方案、批量导出、tikz | 10 |
-| 🧮 **ecalculator** | 控制/电路/信号/电机/热/流体/材料/通信/电力/统计/ML/DSP/系统辨识/振动 | 14 类 70+ 函数 |
+| 🧮 **ecalculator** | 控制/电路/信号/电机/热/流体/材料/通信/电力/统计/ML/DSP/系统辨识/振动/优化决策 | 15 类 80+ 函数 |
 | 🔄 **ebatch** | 参数扫描、并行仿真、报告生成 | 4 |
 | 📊 **edata** | 数据读取/清洗/分析/导出 | 4 |
 | 🛠️ **eutils** | 项目管理/单位换算/常数/公式速查/性能优化/打包 | 11 |
@@ -199,6 +199,33 @@ ecalculator.vibration.psd(x, Fs);  % 功率谱密度
 ecalculator.vibration.rms_envelope(x, Fs, 'win', 0.1);  % RMS 包络
 ```
 
+#### 优化决策
+```matlab
+% TOPSIS 综合评价
+D = [80 90 85; 70 80 90; 90 85 80];
+info = ecalculator.optimization.topsis(D, [0.3, 0.3, 0.4], [1, 1, 1]);
+
+% 层次分析法 (AHP)
+A = [1 1/3 1/5; 3 1 1/2; 5 2 1];
+info = ecalculator.optimization.ahp(A);
+
+% 灰色预测 GM(1,1)
+X0 = [2.874, 3.278, 3.337, 3.390, 3.679];
+info = ecalculator.optimization.grey_predict(X0, 3);
+
+% 蒙特卡洛模拟
+func = @(x) x(:,1).^2 + x(:,2).^2;
+info = ecalculator.optimization.monte_carlo(func, 10000, 'x1', [-1,1], 'x2', [-1,1]);
+
+% 灵敏度分析
+func = @(x) x(1)^2 + 2*x(2)^2;
+info = ecalculator.optimization.sensitivity_analysis(func, [1, 1], {'x1', 'x2'});
+
+% 曲线拟合
+x = linspace(0, 2*pi, 50)';
+info = ecalculator.optimization.curve_fit(x, sin(x), 'cubic');
+```
+
 ### 🔄 ebatch — 批量仿真
 
 ```matlab
@@ -297,7 +324,7 @@ results = esimulink.sensitivity('my_model', 'Kp', ...
 ```
 matlab-toolkit/
 ├── +eplot/          # 出图美化模块 (10 个函数)
-├── +ecalculator/    # 工程计算器模块 (14 类 70+ 函数)
+├── +ecalculator/    # 工程计算器模块 (15 类 80+ 函数)
 │   ├── control.m    # 控制系统
 │   ├── circuit.m    # 电路计算
 │   ├── signal.m     # 信号处理
@@ -311,7 +338,8 @@ matlab-toolkit/
 │   ├── ml.m         # 机器学习
 │   ├── dsp.m        # 数字信号处理
 │   ├── sysid.m      # 系统辨识
-│   └── vibration.m  # 振动分析
+│   ├── vibration.m  # 振动分析
+│   └── optimization.m # 优化决策
 ├── +ebatch/         # 批量仿真模块 (4 个函数)
 ├── +edata/          # 数据处理模块 (4 个函数)
 ├── +eutils/         # 实用工具模块 (11 个函数)
