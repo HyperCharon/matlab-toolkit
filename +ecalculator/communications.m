@@ -1,11 +1,14 @@
 classdef communications
 %ECALCULATOR.COMMUNICATIONS 通信工程计算器
 %
-%   ecalculator.communications.snr(S, N)              信噪比
-%   ecalculator.communications.ber_snr(EbN0, mod)     BER vs SNR
-%   ecalculator.communications.link_budget(Pt, Gt, Gr) 链路预算
-%   ecalculator.communications.modulation_order(mod)   调制阶数
-%   ecalculator.communications.channel_capacity(SNR)   信道容量
+%   ecalculator.communications.snr_db(S, N)                信噪比 (dB)
+%   ecalculator.communications.ebno_to_snr(EbN0, M, rate)  Eb/N0 转 SNR
+%   ecalculator.communications.ber_bpsk(EbN0)              BPSK BER
+%   ecalculator.communications.ber_qam(EbN0, M)            M-QAM BER
+%   ecalculator.communications.link_budget(Pt, Gt, Gr, L, d, f)  链路预算
+%   ecalculator.communications.channel_capacity(SNR, BW)   信道容量
+%   ecalculator.communications.fresnel_zone(d1, d2, f, n)  菲涅尔区
+%   ecalculator.communications.doppler_shift(v, f, theta)  多普勒频移
 %
 %   See also ecalculator.signal, ecalculator.circuit
 
@@ -35,7 +38,7 @@ classdef communications
 
             fprintf('📊 Eb/N0 → SNR 转换:\n');
             fprintf('   Eb/N0:      %.2f dB\n', EbN0_dB);
-            fprintf('   调制阶数:   %d (%s)\n', M, get_mod_name(M));
+            fprintf('   调制阶数:   %d (%s)\n', M, get_mod_order(M));
             fprintf('   编码率:     %.2f\n', code_rate);
             fprintf('   SNR:        %.2f dB\n', val);
         end

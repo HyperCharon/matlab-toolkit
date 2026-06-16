@@ -245,7 +245,7 @@ function sig = extract_signature(filepath)
 end
 
 function generate_api_docs(project_root, opts)
-    api_file = fullfile(opts.output, 'API.md');
+    api_file = fullfile(project_root, opts.output, 'API.md');
     if exist(api_file, 'file')
         fprintf('   ✅ API.md 已存在\n');
         return;

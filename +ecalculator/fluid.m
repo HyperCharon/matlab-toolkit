@@ -5,6 +5,7 @@ classdef fluid
 %   ecalculator.fluid.pipe_flow(rho, mu, D, L, v)     管道流动
 %   ecalculator.fluid.nozzle(P1, T1, P2, gamma)       喷管流动
 %   ecalculator.fluid.pitot(rho, dP)                  皮托管测速
+%   ecalculator.fluid.bernoulli(P1, v1, z1, P2, v2, z2, rho)  伯努利方程
 %
 %   See also ecalculator.thermal, ecalculator.circuit
 
@@ -122,7 +123,7 @@ classdef fluid
             info.rho2 = rho2;
         end
 
-        function v = pitot(rho, dP)
+        function info = pitot(rho, dP)
         %PITOT 皮托管测速
         %
         %   ecalculator.fluid.pitot(1.225, 100)
@@ -135,6 +136,8 @@ classdef fluid
             fprintf('   流速:     %.4f m/s\n', v);
 
             info.v = v;
+            info.rho = rho;
+            info.dP = dP;
         end
 
         function info = bernoulli(P1, v1, z1, P2, v2, z2, rho)

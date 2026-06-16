@@ -20,13 +20,12 @@ function batch_export(input_dir, output_dir, formats, varargin)
     arguments
         input_dir char
         output_dir char = 'exported_figures'
+        formats = {'pdf'}
     end
     arguments (Repeating)
         varargin
     end
 
-    % 解析参数
-    formats = {'pdf'};
     opts = struct('style', '', 'dpi', 300, 'prefix', '', 'suffix', '');
     i = 1;
     while i <= numel(varargin)
@@ -68,7 +67,7 @@ function batch_export(input_dir, output_dir, formats, varargin)
         [~, base_name, ~] = fileparts(fig_files(i).name);
 
         % 添加前缀/后缀
-        out_name = opts.prefix + string(base_name) + opts.suffix;
+        out_name = string(opts.prefix) + string(base_name) + string(opts.suffix);
 
         fprintf('[%d/%d] 处理: %s ... ', i, numel(fig_files), fig_files(i).name);
 

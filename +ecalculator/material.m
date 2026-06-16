@@ -3,9 +3,11 @@ classdef material
 %
 %   ecalculator.material.stress(F, A)                 应力计算
 %   ecalculator.material.strain(dL, L)                应变计算
+%   ecalculator.material.hookes_law(sigma, E)         胡克定律
 %   ecalculator.material.beam_deflection(P, L, E, I)  梁挠度
 %   ecalculator.material.pressure_vessel(P, r, t)     压力容器
 %   ecalculator.material.fatigue(Sa, Se, Sut)         疲劳分析
+%   ecalculator.material.torsion(T, r, J, L, G)       扭转变形
 %
 %   See also ecalculator.thermal, ecalculator.fluid
 
@@ -146,7 +148,7 @@ classdef material
                     sigma_axial = P * ri^2 / (ro^2 - ri^2);
 
                     fprintf('🛢️  厚壁压力容器:\n');
-                    fprintf('   内径:   %.4f m\n", 2*ri);
+                    fprintf('   内径:   %.4f m\n', 2*ri);
                     fprintf('   外径:   %.4f m\n', 2*ro);
 
                 otherwise
@@ -170,9 +172,11 @@ classdef material
 
             if nargin < 4, N = 1e6; end
 
-            % Goodman 准则
+            % Goodman 准则 (假设平均应力 Sm = 0)
             if Se > 0 && Sut > 0
-                Sa_allowable = Se * (1 - 0/Sut);  % 平均应力为 0
+                % Goodman: Sa/Sa_allowable + Sm/Sut = 1
+                % 当 Sm = 0 时, Sa_allowable = Se
+                Sa_allowable = Se;
                 safety_factor = Se / Sa;
             else
                 Sa_allowable = 0;
@@ -196,7 +200,7 @@ classdef material
             fprintf('   疲劳极限:     %.2f MPa\n', Se);
             fprintf('   拉伸强度:     %.2f MPa\n', Sut);
             fprintf('   安全系数:     %.2f\n', safety_factor);
-            fprintf('   预估寿命:     %.2e 次\n", N_f);
+            fprintf('   预估寿命:     %.2e 次\n', N_f);
 
             if safety_factor > 1
                 fprintf('   ✅ 无限寿命设计\n');
@@ -221,10 +225,10 @@ classdef material
             fprintf('🔩 扭转变形:\n');
             fprintf('   扭矩:     %.2f N·m\n', T);
             fprintf('   半径:     %.4f m\n', r);
-            fprintf('   极惯性矩: %.2e m⁴\n", J);
+            fprintf('   极惯性矩: %.2e m⁴\n', J);
             fprintf('   长度:     %.4f m\n', L);
-            fprintf('   剪切模量: %.1f GPa\n", G/1e9);
-            fprintf('   最大剪应力: %.2f MPa\n", tau_max/1e6);
+            fprintf('   剪切模量: %.1f GPa\n', G/1e9);
+            fprintf('   最大剪应力: %.2f MPa\n', tau_max/1e6);
             fprintf('   扭转角:   %.4f rad (%.2f°)\n', theta, theta*180/pi);
 
             info.tau_max = tau_max;

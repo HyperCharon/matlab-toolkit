@@ -95,8 +95,13 @@ function data = clean(data, varargin)
                         outlier_mask = col < lower_bound | col > upper_bound;
 
                     case 'zscore'
-                        z = abs((col - mean(col)) / std(col));
-                        outlier_mask = z > opts.outlier_factor;
+                        col_std = std(col);
+                        if col_std == 0
+                            outlier_mask = false(size(col));
+                        else
+                            z = abs((col - mean(col)) / col_std);
+                            outlier_mask = z > opts.outlier_factor;
+                        end
 
                     otherwise
                         outlier_mask = false(size(col));
@@ -155,11 +160,20 @@ function data = clean(data, varargin)
             if isnumeric(col) && isvector(col)
                 switch lower(opts.normalize)
                     case 'minmax'
-                        col_min = min(col);
-                        col_max = max(col);
-                        data.(numeric_names{i}) = (col - col_min) / (col_max - col_min);
+                        col_min = min(col, [], 'omitnan');
+                        col_max = max(col, [], 'omitnan');
+                        if col_max == col_min
+                            data.(numeric_names{i}) = zeros(size(col));
+                        else
+                            data.(numeric_names{i}) = (col - col_min) / (col_max - col_min);
+                        end
                     case 'zscore'
-                        data.(numeric_names{i}) = (col - mean(col)) / std(col);
+                        col_std = std(col, 'omitnan');
+                        if col_std == 0
+                            data.(numeric_names{i}) = zeros(size(col));
+                        else
+                            data.(numeric_names{i}) = (col - mean(col, 'omitnan')) / col_std;
+                        end
                 end
                 fprintf('   归一化 (%s): %s\n', numeric_names{i}, opts.normalize);
             end

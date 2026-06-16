@@ -36,11 +36,11 @@ classdef power
             fprintf('   输出电流:   %.2f A\n', Iout);
             fprintf('   ───── 计算结果 ─────\n');
             fprintf('   占空比:     %.4f (%.2f%%)\n', D, D*100);
-            fprintf('   电感纹波:   %.4f A\n", delta_IL);
-            fprintf('   电感峰值:   %.4f A\n", IL_peak);
-            fprintf('   输出纹波:   %.4f V\n", delta_Vout);
-            fprintf('   输出功率:   %.2f W\n", Pout);
-            fprintf('   输入电流:   %.4f A\n", Iin);
+            fprintf('   电感纹波:   %.4f A\n', delta_IL);
+            fprintf('   电感峰值:   %.4f A\n', IL_peak);
+            fprintf('   输出纹波:   %.4f V\n', delta_Vout);
+            fprintf('   输出功率:   %.2f W\n', Pout);
+            fprintf('   输入电流:   %.4f A\n', Iin);
 
             % 电感选择建议
             L_min = (Vin - Vout) * D / (fsw * 0.3 * Iout);
@@ -172,6 +172,9 @@ classdef power
                     D = Vout / (Vin_rms * sqrt(2));
 
                     fprintf('⚡ Buck PFC 设计:\n');
+
+                otherwise
+                    error('ecalculator:power:unknownTopology', '未知拓扑: %s', topology);
             end
 
             fprintf('   输入电压(RMS): %.2f V\n', Vin_rms);
@@ -180,7 +183,7 @@ classdef power
             fprintf('   ───── 计算结果 ─────\n');
             fprintf('   输入功率:   %.2f W\n', Pin);
             fprintf('   功率因数:   %.2f\n', PF);
-            fprintf('   效率:       %.2f%%\n", eta*100);
+            fprintf('   效率:       %.2f%%\n', eta*100);
             fprintf('   输入电流(RMS): %.4f A\n', Iin_rms);
             fprintf('   占空比:     %.4f\n', D);
 

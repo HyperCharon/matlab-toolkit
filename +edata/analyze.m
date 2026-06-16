@@ -41,8 +41,8 @@ function info = analyze(data, varargin)
             stats.mean = mean(col, 'omitnan');
             stats.median = median(col, 'omitnan');
             stats.std = std(col, 'omitnan');
-            stats.min = min(col);
-            stats.max = max(col);
+            stats.min = min(col, [], 'omitnan');
+            stats.max = max(col, [], 'omitnan');
             stats.range = stats.max - stats.min;
             stats.q25 = prctile(col, 25);
             stats.q75 = prctile(col, 75);
@@ -83,8 +83,8 @@ function info = analyze(data, varargin)
     elseif isnumeric(data)
         info.mean = mean(data(:), 'omitnan');
         info.std = std(data(:), 'omitnan');
-        info.min = min(data(:));
-        info.max = max(data(:));
+        info.min = min(data(:), [], 'omitnan');
+        info.max = max(data(:), [], 'omitnan');
 
         if opts.verbose
             fprintf('📊 数值数据分析:\n');

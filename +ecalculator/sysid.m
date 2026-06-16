@@ -4,7 +4,7 @@ classdef sysid
 %   ecalculator.sysid.estimate(u, y, Fs)              从实验数据估计传递函数
 %   ecalculator.sysid.compare_sim_exp(sim, exp, Fs)    仿真与实验对比
 %   ecalculator.sysid.model_order(u, y, Fs, max_order) 模型阶次选择
-%   ecalculator.sysid.step_response_id(u, y, Fs)       阶跃响应辨识
+%   ecalculator.sysid.step_response_id(y, Fs)           阶跃响应辨识
 %
 %   See also ecalculator.control, ecalculator.vibration
 

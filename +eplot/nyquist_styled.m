@@ -47,7 +47,9 @@ function fig = nyquist_styled(sys, varargin)
                 'FontSize', 9, 'Color', 'g');
 
             % 相位裕度点
-            [re_pm, im_pm] = freqresp(sys, Wcp);
+            H = freqresp(sys, Wcp);
+            re_pm = real(squeeze(H));
+            im_pm = imag(squeeze(H));
             plot(re_pm, im_pm, 'mo', 'MarkerSize', 8, 'LineWidth', 2);
         end
     end

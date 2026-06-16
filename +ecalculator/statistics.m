@@ -29,12 +29,12 @@ classdef statistics
             ci_upper = mu + t_crit * se;
 
             fprintf('📊 置信区间分析:\n');
-            fprintf('   样本量:     %d\n", n);
-            fprintf('   均值:       %.4f\n", mu);
-            fprintf('   标准差:     %.4f\n", sigma);
-            fprintf('   标准误:     %.4f\n", se);
-            fprintf('   置信水平:   %.1f%%\n", (1-alpha)*100);
-            fprintf('   置信区间:   [%.4f, %.4f]\n", ci_lower, ci_upper);
+            fprintf('   样本量:     %d\n', n);
+            fprintf('   均值:       %.4f\n', mu);
+            fprintf('   标准差:     %.4f\n', sigma);
+            fprintf('   标准误:     %.4f\n', se);
+            fprintf('   置信水平:   %.1f%%\n', (1-alpha)*100);
+            fprintf('   置信区间:   [%.4f, %.4f]\n', ci_lower, ci_upper);
 
             info.mu = mu;
             info.sigma = sigma;
@@ -59,7 +59,11 @@ classdef statistics
                     test_name = '双样本 t 检验';
 
                 case 'ttest'
-                    % 单样本 t 检验
+                    % 单样本 t 检验 (data2 为假设均值)
+                    if numel(data2) ~= 1
+                        error('ecalculator:statistics:invalidMu', ...
+                            '单样本 t 检验的假设均值必须是标量');
+                    end
                     [h, p, ci, stats] = ttest(data1, data2, 'Alpha', alpha);
                     test_name = '单样本 t 检验';
 
@@ -78,10 +82,10 @@ classdef statistics
             end
 
             fprintf('📊 假设检验 (%s):\n', test_name);
-            fprintf('   样本 1 均值: %.4f\n", mean(data1));
-            fprintf('   样本 2 均值: %.4f\n", mean(data2));
-            fprintf('   显著性水平: %.2f\n", alpha);
-            fprintf('   p 值:       %.4f\n", p);
+            fprintf('   样本 1 均值: %.4f\n', mean(data1));
+            fprintf('   样本 2 均值: %.4f\n', mean(data2));
+            fprintf('   显著性水平: %.2f\n', alpha);
+            fprintf('   p 值:       %.4f\n', p);
 
             if h
                 fprintf('   ✅ 拒绝原假设 (差异显著)\n');
@@ -131,9 +135,9 @@ classdef statistics
             RMSE = sqrt(SS_res / numel(y));
 
             fprintf('📊 回归分析 (%s):\n', model_name);
-            fprintf('   系数:       %s\n", mat2str(p));
-            fprintf('   R²:         %.4f\n", R2);
-            fprintf('   RMSE:       %.4f\n", RMSE);
+            fprintf('   系数:       %s\n', mat2str(p));
+            fprintf('   R²:         %.4f\n', R2);
+            fprintf('   RMSE:       %.4f\n', RMSE);
 
             % 绘图
             figure('Name', sprintf('Regression: %s', model_name));
@@ -172,10 +176,10 @@ classdef statistics
             [p, tbl, stats] = anova1(all_data, group_labels, 'off');
 
             fprintf('📊 单因素方差分析:\n');
-            fprintf('   组数:       %d\n", n_groups);
-            fprintf('   总样本量:   %d\n", numel(all_data));
-            fprintf('   F 值:       %.4f\n", tbl{2, 5});
-            fprintf('   p 值:       %.4f\n", p);
+            fprintf('   组数:       %d\n', n_groups);
+            fprintf('   总样本量:   %d\n', numel(all_data));
+            fprintf('   F 值:       %.4f\n', tbl{2, 5});
+            fprintf('   p 值:       %.4f\n', p);
 
             if p < 0.05
                 fprintf('   ✅ 组间差异显著\n');
@@ -188,7 +192,7 @@ classdef statistics
                 fprintf('\n   多重比较 (Tukey HSD):\n');
                 [c, m, h, gnames] = multcompare(stats, 'Display', 'off');
                 for i = 1:size(c, 1)
-                    fprintf('   组 %d vs 组 %d: p = %.4f\n", c(i,1), c(i,2), c(i, 6));
+                    fprintf('   组 %d vs 组 %d: p = %.4f\n', c(i,1), c(i,2), c(i, 6));
                 end
             end
 
@@ -214,6 +218,7 @@ classdef statistics
                 case 'exponential'
                     % 指数分布拟合
                     mu = mean(data);
+                    sigma = mu;  % 指数分布的标准差等于均值
                     dist_name = '指数分布';
 
                 case 'weibull'
@@ -228,9 +233,9 @@ classdef statistics
             % KS 检验
             [h, p] = kstest(data);
 
-            fprintf('📊 分布拟合 (%s):\n", dist_name);
-            fprintf('   参数:       %s\n", mat2str([mu sigma]));
-            fprintf('   KS 检验 p 值: %.4f\n", p);
+            fprintf('📊 分布拟合 (%s):\n', dist_name);
+            fprintf('   参数:       %s\n', mat2str([mu sigma]));
+            fprintf('   KS 检验 p 值: %.4f\n', p);
 
             if h
                 fprintf('   ❌ 拒绝原假设 (数据不服从该分布)\n');

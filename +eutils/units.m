@@ -12,7 +12,7 @@ classdef units
 %     温度: celsius, fahrenheit, kelvin
 %     压力: Pa, kPa, MPa, bar, atm, psi, torr, mmHg
 %     能量: J, kJ, cal, kcal, kWh, eV, BTU
-%     功率: W, kW, MW, hp, BTU/h
+%     功率: W, kW, MW, hp, BTU_h
 %     力: N, kN, lbf, dyn, kgf
 %     速度: ms, kmh, mph, knot, fps
 %     面积: m2, cm2, mm2, ft2, in2, acre

@@ -6,7 +6,7 @@ function fig = waterfall(x, y, z, varargin)
 %
 %   典型用途：不同温度/频率/参数下的频率响应对比
 %
-%   See also eplot.style, eplot.surface
+%   See also eplot.style, eplot.compare_bode
 
     opts = struct('style', '', 'colormap', 'jet', 'xlabel', 'X', ...
                   'ylabel', 'Y', 'zlabel', 'Z', 'title', 'Waterfall Plot', ...

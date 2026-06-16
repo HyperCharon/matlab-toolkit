@@ -11,7 +11,7 @@
 - 🎨 **论文级出图** — 内置 IEEE/Nature/Springer 等期刊样式
 - ⚡ **高效开发** — 批量处理、自动化工作流
 - 📚 **中文友好** — 完整中文文档和注释
-- 🔧 **功能全面** — 51 个函数，覆盖 9 个工程领域
+- 🔧 **功能全面** — 70+ 个函数，覆盖 14 个工程领域
 - 📦 **专业打包** — 完整的工具箱打包和发布流程
 
 ## 📊 功能概览
@@ -19,7 +19,7 @@
 | 模块 | 功能 | 函数数 |
 |------|------|--------|
 | 🎨 **eplot** | 出图美化、配色方案、批量导出、tikz | 10 |
-| 🧮 **ecalculator** | 控制/电路/信号/电机/热/流体/材料/通信/电力 | 9 类 50+ 函数 |
+| 🧮 **ecalculator** | 控制/电路/信号/电机/热/流体/材料/通信/电力/统计/ML/DSP/系统辨识/振动 | 14 类 70+ 函数 |
 | 🔄 **ebatch** | 参数扫描、并行仿真、报告生成 | 4 |
 | 📊 **edata** | 数据读取/清洗/分析/导出 | 4 |
 | 🛠️ **eutils** | 项目管理/单位换算/常数/公式速查/性能优化/打包 | 11 |
@@ -156,6 +156,49 @@ ecalculator.power.inverter(400, 50, 10, 1e-3, 'SPWM');
 ecalculator.power.pfc(220, 1000, 65e3, 'boost');
 ```
 
+#### 统计学
+```matlab
+ecalculator.statistics.confidence_interval(data, 0.05);  % 置信区间
+ecalculator.statistics.hypothesis_test(data1, data2, 'ttest2');  % 假设检验
+ecalculator.statistics.regression(x, y, 'linear');  % 回归分析
+ecalculator.statistics.anova({group1, group2, group3});  % 方差分析
+ecalculator.statistics.distribution_fit(data, 'normal');  % 分布拟合
+```
+
+#### 机器学习
+```matlab
+ecalculator.ml.pca_analysis(data, 'n_components', 3);  % 主成分分析
+ecalculator.ml.kmeans_analysis(data, 3);  % K-means 聚类
+ecalculator.ml.svm_classification(X, y, 'kernel', 'rbf');  % SVM 分类
+ecalculator.ml.cross_validation(X, y, 10, 'svm');  % 交叉验证
+ecalculator.ml.feature_importance(X, y, 'tree');  % 特征重要性
+```
+
+#### 数字信号处理
+```matlab
+ecalculator.dsp.fir_design(spec);  % FIR 滤波器设计
+ecalculator.dsp.iir_design(spec);  % IIR 滤波器设计
+ecalculator.dsp.resample_signal(x, 3, 2, 8000);  % 采样率转换
+ecalculator.dsp.window_analysis('hanning', 100);  % 窗函数分析
+ecalculator.dsp.spectrogram_analysis(x, 1000);  % 时频分析
+```
+
+#### 系统辨识
+```matlab
+ecalculator.sysid.step_response_id(y, Fs);  % 阶跃响应辨识
+ecalculator.sysid.arx_model(u, y, na, nb);  % ARX 模型
+ecalculator.sysid.bode_compare(sys1, sys2);  % 频率响应对比
+```
+
+#### 振动分析
+```matlab
+ecalculator.vibration.fft_guided(x, Fs);  % FFT 引导式分析
+ecalculator.vibration.signal_check(x, Fs);  % 信号质量检查
+ecalculator.vibration.transfer_function(u, y, Fs);  % 传递函数估计
+ecalculator.vibration.psd(x, Fs);  % 功率谱密度
+ecalculator.vibration.rms_envelope(x, Fs, 'win', 0.1);  % RMS 包络
+```
+
 ### 🔄 ebatch — 批量仿真
 
 ```matlab
@@ -254,7 +297,7 @@ results = esimulink.sensitivity('my_model', 'Kp', ...
 ```
 matlab-toolkit/
 ├── +eplot/          # 出图美化模块 (10 个函数)
-├── +ecalculator/    # 工程计算器模块 (9 类 50+ 函数)
+├── +ecalculator/    # 工程计算器模块 (14 类 70+ 函数)
 │   ├── control.m    # 控制系统
 │   ├── circuit.m    # 电路计算
 │   ├── signal.m     # 信号处理
@@ -263,7 +306,12 @@ matlab-toolkit/
 │   ├── fluid.m      # 流体力学
 │   ├── material.m   # 材料力学
 │   ├── communications.m # 通信工程
-│   └── power.m      # 电力电子
+│   ├── power.m      # 电力电子
+│   ├── statistics.m # 统计学
+│   ├── ml.m         # 机器学习
+│   ├── dsp.m        # 数字信号处理
+│   ├── sysid.m      # 系统辨识
+│   └── vibration.m  # 振动分析
 ├── +ebatch/         # 批量仿真模块 (4 个函数)
 ├── +edata/          # 数据处理模块 (4 个函数)
 ├── +eutils/         # 实用工具模块 (11 个函数)

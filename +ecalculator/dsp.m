@@ -3,7 +3,7 @@ classdef dsp
 %
 %   ecalculator.dsp.fir_design(spec)           FIR 滤波器设计
 %   ecalculator.dsp.iir_design(spec)           IIR 滤波器设计
-%   ecalculator.dsp.resample(x, p, q, Fs)      采样率转换
+%   ecalculator.dsp.resample_signal(x, p, q, Fs)  采样率转换
 %   ecalculator.dsp.window_analysis(win)       窗函数分析
 %   ecalculator.dsp.spectrogram_analysis(x, Fs) 时频分析
 %
@@ -107,7 +107,7 @@ classdef dsp
                 case 'highpass'
                     [b, a] = ellip(N, spec.ripple, spec.attenuation, Wn, 'high');
                 case 'bandpass'
-                    [b, a] = ellip(N, spec.ripple, spec.attenuation, Wn);
+                    [b, a] = ellip(N, spec.ripple, spec.attenuation, Wn, 'bandpass');
                 otherwise
                     error('ecalculator:dsp:unknownType', '未知滤波器类型: %s', spec.type);
             end
@@ -145,11 +145,12 @@ classdef dsp
             info.f = f;
         end
 
-        function [y, Fs_new] = resample(x, p, q, Fs)
-        %RESAMPLE 采样率转换
+        function [y, Fs_new] = resample_signal(x, p, q, Fs)
+        %RESAMPLE_SIGNAL 采样率转换
         %
-        %   [y, Fs_new] = ecalculator.dsp.resample(x, 3, 2, 8000)
+        %   [y, Fs_new] = ecalculator.dsp.resample_signal(x, 3, 2, 8000)
 
+            % 使用 MATLAB 内置 resample 函数
             y = resample(x, p, q);
             Fs_new = Fs * p / q;
 

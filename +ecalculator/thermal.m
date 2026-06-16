@@ -4,7 +4,7 @@ classdef thermal
 %   ecalculator.thermal.conduction(k, A, dT, L)      热传导
 %   ecalculator.thermal.convection(h, A, dT)          对流换热
 %   ecalculator.thermal.radiation(epsilon, A, T1, T2) 辐射换热
-%   ecalculator.thermal.fintube(n, k, L, w, t, Tb, Ta) 翅片管散热
+%   ecalculator.thermal.fintube(n, k_fin, L, w, t, h, Tb, Ta)  翅片管散热
 %   ecalculator.thermal.heatpipe(Q, L, d)             热管传热
 %
 %   See also ecalculator.circuit, ecalculator.motor

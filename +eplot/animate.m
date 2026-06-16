@@ -66,8 +66,13 @@ function animate(fig, filename, varargin)
                     for i = 1:numel(anim_frames)
                         [A, map] = rgb2ind(frame2im(anim_frames{i}), 256);
                         if i == 1
+                            if opts.loop
+                                loop_count = Inf;
+                            else
+                                loop_count = 0;
+                            end
                             imwrite(A, map, anim_filename, 'gif', ...
-                                'LoopCount', opts.loop * Inf, ...
+                                'LoopCount', loop_count, ...
                                 'DelayTime', 1/opts.fps);
                         else
                             imwrite(A, map, anim_filename, 'gif', ...
@@ -110,8 +115,13 @@ function animate(fig, filename, varargin)
                     imwrite(A, map, filename, 'gif', 'WriteMode', 'append', ...
                         'DelayTime', 1/opts.fps);
                 else
+                    if opts.loop
+                        loop_count = Inf;
+                    else
+                        loop_count = 0;
+                    end
                     imwrite(A, map, filename, 'gif', ...
-                        'LoopCount', opts.loop * Inf, ...
+                        'LoopCount', loop_count, ...
                         'DelayTime', 1/opts.fps);
                 end
             end

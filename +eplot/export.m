@@ -93,9 +93,14 @@ function export(fig, filename, varargin)
 
     % 裁剪白边
     if opts.crop
+        % 保存原始属性
+        orig_Units = get(fig, 'Units');
+        orig_PaperPositionMode = get(fig, 'PaperPositionMode');
+        orig_PaperUnits = get(fig, 'PaperUnits');
+        orig_PaperSize = get(fig, 'PaperSize');
+
         set(fig, 'Units', 'centimeters');
         pos = get(fig, 'Position');
-        % 紧凑布局
         set(fig, 'PaperPositionMode', 'auto');
         set(fig, 'PaperUnits', 'centimeters');
         set(fig, 'PaperSize', [pos(3) pos(4)]);
@@ -115,5 +120,13 @@ function export(fig, filename, varargin)
         else
             rethrow(ME);
         end
+    end
+
+    % 恢复原始属性
+    if opts.crop
+        set(fig, 'Units', orig_Units);
+        set(fig, 'PaperPositionMode', orig_PaperPositionMode);
+        set(fig, 'PaperUnits', orig_PaperUnits);
+        set(fig, 'PaperSize', orig_PaperSize);
     end
 end

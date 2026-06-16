@@ -154,7 +154,7 @@ function optimize(func_or_script, varargin)
             strrep(func_name, '.', '_'));
 
         fid = fopen(report_file, 'w');
-        fprintf(fid, 'MatForge 性能优化报告\n');
+        fprintf(fid, 'MatForge Toolkit 性能优化报告\n');
         fprintf(fid, '====================\n\n');
         fprintf(fid, '函数: %s\n', func_name);
         fprintf(fid, '基准时间: %.4f s\n', baseline_time);

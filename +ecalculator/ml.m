@@ -40,13 +40,13 @@ classdef ml
 
             fprintf('📊 主成分分析:\n');
             fprintf('   原始维度:   %d\n', size(data, 2));
-            fprintf('   主成分数:   %d\n", opts.n_components);
-            fprintf('   解释方差:   %.2f%%\n", sum(explained(1:opts.n_components)));
+            fprintf('   主成分数:   %d\n', opts.n_components);
+            fprintf('   解释方差:   %.2f%%\n', sum(explained(1:opts.n_components)));
 
             % 打印各主成分解释方差
             fprintf('\n   各主成分解释方差:\n');
             for i = 1:min(10, numel(explained))
-                fprintf('   PC%d: %.2f%%\n", i, explained(i));
+                fprintf('   PC%d: %.2f%%\n', i, explained(i));
             end
 
             % 绘图
@@ -102,15 +102,15 @@ classdef ml
             mean_s = mean(s);
 
             fprintf('📊 K-means 聚类分析:\n');
-            fprintf('   聚类数:     %d\n", k);
-            fprintf('   样本量:     %d\n", size(data, 1));
-            fprintf('   轮廓系数:   %.4f\n", mean_s);
+            fprintf('   聚类数:     %d\n', k);
+            fprintf('   样本量:     %d\n', size(data, 1));
+            fprintf('   轮廓系数:   %.4f\n', mean_s);
 
             % 打印各簇统计
             fprintf('\n   各簇统计:\n');
             for i = 1:k
                 cluster_size = sum(idx == i);
-                fprintf('   簇 %d: %d 个样本 (%.1f%%)\n", i, cluster_size, cluster_size/numel(idx)*100);
+                fprintf('   簇 %d: %d 个样本 (%.1f%%)\n', i, cluster_size, cluster_size/numel(idx)*100);
             end
 
             % 绘图
@@ -157,9 +157,9 @@ classdef ml
             accuracy = sum(y_pred == y) / numel(y);
 
             fprintf('📊 SVM 分类:\n');
-            fprintf('   核函数:     %s\n", opts.kernel);
-            fprintf('   训练准确率: %.2f%%\n", accuracy*100);
-            fprintf('   交叉验证:   %.2f%%\n", (1-cv_loss)*100);
+            fprintf('   核函数:     %s\n', opts.kernel);
+            fprintf('   训练准确率: %.2f%%\n', accuracy*100);
+            fprintf('   交叉验证:   %.2f%%\n', (1-cv_loss)*100);
 
             % 混淆矩阵
             cm = confusionmat(y, y_pred);
@@ -251,11 +251,11 @@ classdef ml
             end
 
             fprintf('📊 %d 折交叉验证 (%s):\n', k, model_type);
-            fprintf('   准确率: %.2f%% ± %.2f%%\n", mean(accuracy)*100, std(accuracy)*100);
+            fprintf('   准确率: %.2f%% ± %.2f%%\n', mean(accuracy)*100, std(accuracy)*100);
             if numel(unique(y)) == 2
-                fprintf('   精确率: %.2f%% ± %.2f%%\n", mean(precision)*100, std(precision)*100);
-                fprintf('   召回率: %.2f%% ± %.2f%%\n", mean(recall)*100, std(recall)*100);
-                fprintf('   F1:     %.2f%% ± %.2f%%\n", mean(f1)*100, std(f1)*100);
+                fprintf('   精确率: %.2f%% ± %.2f%%\n', mean(precision)*100, std(precision)*100);
+                fprintf('   召回率: %.2f%% ± %.2f%%\n', mean(recall)*100, std(recall)*100);
+                fprintf('   F1:     %.2f%% ± %.2f%%\n', mean(f1)*100, std(f1)*100);
             end
 
             info.accuracy = accuracy;
@@ -294,7 +294,7 @@ classdef ml
 
             fprintf('📊 特征重要性 (%s):\n', method_name);
             for i = 1:numel(importance)
-                fprintf('   特征 %d: %.4f\n", idx(i), sorted_imp(i));
+                fprintf('   特征 %d: %.4f\n', idx(i), sorted_imp(i));
             end
 
             % 绘图

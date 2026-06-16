@@ -7,7 +7,7 @@ function animate_step(sys, filename, varargin)
 %
 %   See also eplot.animate, eplot.compare_step
 
-    opts = struct('t', [], 'labels', {{}}, 'fps', 20, 'style', '');
+    opts = struct('t', [], 'labels', {}, 'fps', 20, 'style', '');
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
     end

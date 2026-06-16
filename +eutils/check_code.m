@@ -121,7 +121,7 @@ function issues = check_file(filepath, opts)
             num = nums{j};
             val = str2double(num);
             % 忽略常见的数字
-            if ~ismember(val, [0, 1, 2, 10, 100, 1000, 0.5, 0.1, 0.01, 0.001, 0.1])
+            if ~ismember(val, [0, 1, 2, 10, 100, 1000, 0.5, 0.1, 0.01, 0.001])
                 if val > 1 || val < -1
                     issues{end+1} = struct('file', filename, 'line', i, ...
                         'severity', 'info', 'message', sprintf('魔法数字: %s', num));

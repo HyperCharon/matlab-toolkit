@@ -39,6 +39,9 @@ end
 
 function generate_simple_tikz(fig, filename, opts)
     fid = fopen(filename, 'w');
+    if fid == -1
+        error('eplot:export_tikz:fileOpen', '无法打开文件: %s', filename);
+    end
 
     if opts.standalone
         fprintf(fid, '\\documentclass{standalone}\n');
@@ -47,7 +50,7 @@ function generate_simple_tikz(fig, filename, opts)
         fprintf(fid, '\\begin{document}\n');
     end
 
-    fprintf(fid, '%% MatForge 导出的 tikz 代码\n');
+    fprintf(fid, '%% eplot 导出的 tikz 代码\n');
     fprintf(fid, '%% 生成时间: %s\n\n', datestr(now));
 
     % 获取所有 axes
