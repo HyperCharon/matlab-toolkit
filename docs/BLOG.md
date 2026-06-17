@@ -2,9 +2,9 @@
 
 ## 摘要
 
-本文介绍了一款面向工程计算的 MATLAB 工具箱——MatForge。该工具箱针对工科研究生和工程师在日常科研与工程实践中遇到的重复性计算任务，提供了模块化的解决方案。工具箱涵盖出图美化、工程计算、批量仿真、数据处理、项目管理及 Simulink 辅助六大功能模块，共包含 55 个 MATLAB 函数文件，代码量约 10000 行。本文将从设计背景、架构原理、核心功能及使用方法四个维度展开论述。
+本文介绍了一款面向工程计算的 MATLAB 工具箱——MatForge。该工具箱针对工科研究生和工程师在日常科研与工程实践中遇到的重复性计算任务，提供了模块化的解决方案。工具箱涵盖出图美化、工程计算、批量仿真、数据处理、项目管理及 Simulink 辅助六大功能模块，共包含 72 个 MATLAB 函数文件，代码量约 15000 行，覆盖 18 个工程领域。本文将从设计背景、架构原理、核心功能及使用方法四个维度展开论述。
 
-**关键词：** MATLAB 工具箱；工程计算；出图美化；参数扫描；数据处理
+**关键词：** MATLAB 工具箱；工程计算；出图美化；参数扫描；数据处理；时间序列；图论分析；优化决策
 
 ---
 
@@ -61,11 +61,11 @@ eplot.style('ieee');
 
 | 模块 | 职责 | 核心函数数量 |
 |------|------|-------------|
-| eplot | 图表样式管理、配色方案、格式导出 | 11 |
-| ecalculator | 工程公式计算、系统分析 | 12 |
+| eplot | 图表样式管理、配色方案、格式导出、动画生成 | 15 |
+| ecalculator | 工程公式计算、系统分析（18 个子模块） | 100+ |
 | ebatch | 参数扫描、并行仿真、结果可视化 | 4 |
-| edata | 数据读取、清洗、分析、导出 | 5 |
-| eutils | 项目管理、单位换算、性能优化 | 10 |
+| edata | 数据读取、清洗、分析、导出、实验流水线 | 6 |
+| eutils | 项目管理、单位换算、性能优化、代码检查 | 13 |
 | esimulink | Simulink 模型辅助工具 | 4 |
 
 ### 2.3 数据流设计
@@ -188,7 +188,7 @@ eplot.batch_export('figs/', 'output/', {'pdf', 'png'});
 
 #### 3.2.1 设计原理
 
-工程计算器模块的设计目标是将常用工程公式封装为可复用的函数。模块按工程领域划分为 12 个子模块：
+工程计算器模块的设计目标是将常用工程公式封装为可复用的函数。模块按工程领域划分为 18 个子模块：
 
 - **control**：控制系统分析（波特图、阶跃响应、PID 整定）
 - **circuit**：电路计算（分压、滤波器、运放）
@@ -200,8 +200,14 @@ eplot.batch_export('figs/', 'output/', {'pdf', 'png'});
 - **communications**：通信工程计算（链路预算、信道容量）
 - **power**：电力电子计算（DC-DC 变换器、逆变器）
 - **dsp**：数字信号处理（FIR/IIR 设计、窗函数分析）
-- **statistics**：统计学计算（置信区间、假设检验）
-- **ml**：机器学习（PCA、聚类、分类）
+- **statistics**：统计学计算（置信区间、假设检验、回归分析）
+- **ml**：机器学习（PCA、聚类、分类、交叉验证）
+- **optimization**：优化决策（TOPSIS、AHP、灰色预测、蒙特卡洛）
+- **timeseries**：时间序列分析（平稳性检验、指数平滑、ARIMA）
+- **network**：图论分析（最短路径、最小生成树、最大流）
+- **sysid**：系统辨识（阶跃响应辨识、ARX 模型）
+- **vibration**：振动分析（FFT、PSD、包络分析）
+- **recommend**：模型推荐引擎（根据问题类型推荐方法）
 
 #### 3.2.2 控制系统子模块
 
@@ -287,6 +293,81 @@ info = ecalculator.thermal.heatsink(150, 40, 10, 1.5, 0.5);
 %   功耗:         10.00 W
 %   散热器热阻:   ≤ 9.00 K/W
 %   ✅ 选择 Rth_sa ≤ 9.00 K/W 的散热器
+```
+
+#### 3.2.5 优化决策子模块
+
+优化决策子模块提供了多目标决策分析和预测功能：
+
+**TOPSIS 综合评价：**
+
+```matlab
+D = [80 90 85; 70 80 90; 90 85 80];
+info = ecalculator.optimization.topsis(D, [0.3, 0.3, 0.4], [1, 1, 1]);
+% 输出：
+%   排序结果: 方案3 > 方案1 > 方案2
+%   贴近度: [0.5234, 0.3821, 0.6145]
+```
+
+**灰色预测 GM(1,1)：**
+
+```matlab
+X0 = [2.874, 3.278, 3.337, 3.390, 3.679];
+info = ecalculator.optimization.grey_predict(X0, 3);
+% 输出：
+%   发展系数 a: -0.0343
+%   灰作用量 b: 2.9876
+%   拟合优度 R²: 0.9876
+```
+
+#### 3.2.6 时间序列分析子模块
+
+时间序列分析子模块提供了平稳性检验、指数平滑、ARIMA 预测等功能：
+
+**ADF 平稳性检验：**
+
+```matlab
+y = cumsum(randn(100,1)) + 10;  % 非平稳序列
+info = ecalculator.timeseries.stationarity_test(y);
+% 输出：
+%   ADF 统计量: -1.2345
+%   p 值: 0.6543
+%   结论: 序列非平稳
+```
+
+**指数平滑预测：**
+
+```matlab
+y = (1:100)' + randn(100,1)*2;
+info = ecalculator.timeseries.exponential_smoothing(y, 0.3, 'method', 'double');
+% 输出：
+%   平滑系数 α: 0.30
+%   RMSE: 2.1234
+%   MAE: 1.8765
+```
+
+#### 3.2.7 图论分析子模块
+
+图论分析子模块提供了图算法的实现：
+
+**Dijkstra 最短路径：**
+
+```matlab
+W = [0 2 Inf 6; 2 0 3 Inf; Inf 3 0 4; 6 Inf 4 0];
+info = ecalculator.network.dijkstra(W, 1, 4);
+% 输出：
+%   起点: 1, 终点: 4
+%   最短距离: 9.00
+%   路径: [1, 2, 3, 4]
+```
+
+**Kruskal 最小生成树：**
+
+```matlab
+info = ecalculator.network.minimum_spanning_tree(W);
+% 输出：
+%   边: [1-2, 2-3, 3-4]
+%   总权重: 9.00
 ```
 
 ### 3.3 批量仿真模块（ebatch）
@@ -546,19 +627,23 @@ ebatch.export_report(results, 'format', 'html');
 
 本文设计并实现了一款面向工程计算的 MATLAB 工具箱——MatForge。该工具箱具有以下特点：
 
-1. **功能覆盖全面**：涵盖出图美化、工程计算、批量仿真、数据处理、项目管理、Simulink 辅助六大功能模块，覆盖 12 个工程领域。
+1. **功能覆盖全面**：涵盖出图美化、工程计算、批量仿真、数据处理、项目管理、Simulink 辅助六大功能模块，覆盖 18 个工程领域，包含 100+ 个计算函数。
 2. **接口设计规范**：统一的函数命名规范和参数传递方式，降低学习成本。
 3. **模块化架构**：各模块独立封装，便于维护和扩展。
 4. **中文友好**：完整的中文文档和注释，适合国内工科学生使用。
+5. **代码质量保障**：完善的错误处理、输入验证、性能优化，确保代码健壮性。
+6. **智能辅助功能**：模型推荐引擎根据问题类型自动推荐合适的分析方法。
 
 ### 5.2 后续工作
 
 后续工作将从以下方向展开：
 
-1. **功能扩展**：根据用户反馈，增加更多工程领域的计算功能。
+1. **功能扩展**：根据用户反馈，增加更多工程领域的计算功能，如电磁场分析、可靠性工程等。
 2. **性能优化**：对批量仿真模块进行并行计算优化，提升大规模参数扫描的效率。
 3. **GUI 界面**：开发基于 App Designer 的图形用户界面，降低使用门槛。
 4. **文档完善**：补充更多工程应用案例和教程文档。
+5. **测试覆盖**：扩展单元测试覆盖范围，确保代码质量。
+6. **国际化**：支持英文界面和文档，扩大用户群体。
 
 ---
 
@@ -583,6 +668,9 @@ ebatch.export_report(results, 'format', 'html');
 ```matlab
 % 添加到 MATLAB 路径
 addpath(genpath('/path/to/matlab-toolkit'));
+
+% 验证安装
+eutils.constants.c  % 应返回光速值
 ```
 
 ### B. 常用函数速查
@@ -599,11 +687,16 @@ addpath(genpath('/path/to/matlab-toolkit'));
 | 数据清洗 | `edata.clean(data, 'remove_nan', true)` |
 | 单位换算 | `eutils.units.convert(value, from, to)` |
 | 物理常数 | `eutils.constants.c` |
+| TOPSIS 评价 | `ecalculator.optimization.topsis(D, weights, types)` |
+| 灰色预测 | `ecalculator.optimization.grey_predict(X0, n)` |
+| 指数平滑 | `ecalculator.timeseries.exponential_smoothing(y, alpha)` |
+| 最短路径 | `ecalculator.network.dijkstra(W, source, target)` |
+| 模型推荐 | `ecalculator.recommend.models('prediction')` |
 
 ### C. 兼容性要求
 
 - MATLAB R2022b 及以上版本
-- 可选工具箱：Signal Processing Toolbox、Parallel Computing Toolbox、Simulink
+- 可选工具箱：Signal Processing Toolbox、Parallel Computing Toolbox、Simulink、Statistics and Machine Learning Toolbox
 
 ---
 
