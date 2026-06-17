@@ -71,14 +71,15 @@ classdef network
                 end
             end
 
-            % 回溯路径
+            % 回溯路径 (使用 cell 数组避免动态增长)
             if nargin >= 3 && target > 0
-                path = [];
+                path_cell = {};
                 node = target;
                 while node > 0
-                    path = [node, path];
+                    path_cell = [{node}, path_cell];
                     node = prev(node);
                 end
+                path = cell2mat(path_cell);
 
                 fprintf('📊 最短路径 (Dijkstra):\n');
                 fprintf('   起点: %d, 终点: %d\n', source, target);
@@ -180,15 +181,19 @@ classdef network
 
             n = size(W, 1);
 
-            % 提取所有边
-            edges = [];
+            % 提取所有边 (预分配内存)
+            max_edges = n * (n-1) / 2;
+            edges = zeros(max_edges, 3);
+            edge_count = 0;
             for i = 1:n
                 for j = i+1:n
                     if W(i,j) < inf
-                        edges = [edges; i, j, W(i,j)];
+                        edge_count = edge_count + 1;
+                        edges(edge_count, :) = [i, j, W(i,j)];
                     end
                 end
             end
+            edges = edges(1:edge_count, :);
 
             % 按权重排序
             [~, idx] = sort(edges(:,3));
@@ -198,7 +203,8 @@ classdef network
             parent = 1:n;
             rank = zeros(1, n);
 
-            mst_edges = [];
+            mst_edges = zeros(n-1, 3);
+            mst_count = 0;
             total_weight = 0;
 
             for i = 1:size(edges, 1)
@@ -211,7 +217,8 @@ classdef network
                 root_v = find_root(parent, v);
 
                 if root_u ~= root_v
-                    mst_edges = [mst_edges; u, v, w];
+                    mst_count = mst_count + 1;
+                    mst_edges(mst_count, :) = [u, v, w];
                     total_weight = total_weight + w;
 
                     % 合并集合
@@ -225,6 +232,7 @@ classdef network
                     end
                 end
             end
+            mst_edges = mst_edges(1:mst_count, :);
 
             fprintf('📊 最小生成树 (Kruskal):\n');
             fprintf('   节点数: %d\n', n);
@@ -290,13 +298,14 @@ classdef network
             visited = false(n, 1);
             queue = source;
             visited(source) = true;
-            while ~isempty(queue)
-                u = queue(1);
-                queue(1) = [];
+            queue_head = 1;
+            while queue_head <= numel(queue)
+                u = queue(queue_head);
+                queue_head = queue_head + 1;
                 for v = 1:n
                     if ~visited(v) && residual(u, v) > 0
                         visited(v) = true;
-                        queue = [queue, v];
+                        queue(end+1) = v;  %#ok<AGROW>
                     end
                 end
             end

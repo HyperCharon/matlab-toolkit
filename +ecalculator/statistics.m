@@ -120,6 +120,10 @@ classdef statistics
 
                 case 'exponential'
                     % 指数回归
+                    if any(y <= 0)
+                        error('ecalculator:statistics:invalidData', ...
+                            '指数回归要求所有数据点为正数');
+                    end
                     p = polyfit(x, log(y), 1);
                     y_fit = exp(polyval(p, x));
                     model_name = '指数回归';
@@ -164,12 +168,19 @@ classdef statistics
 
             n_groups = numel(groups);
 
-            % 合并数据
-            all_data = [];
-            group_labels = [];
+            % 合并数据 (预分配内存)
+            total_samples = 0;
             for i = 1:n_groups
-                all_data = [all_data; groups{i}(:)];
-                group_labels = [group_labels; i * ones(numel(groups{i}), 1)];
+                total_samples = total_samples + numel(groups{i});
+            end
+            all_data = zeros(total_samples, 1);
+            group_labels = zeros(total_samples, 1);
+            idx = 0;
+            for i = 1:n_groups
+                n_i = numel(groups{i});
+                all_data(idx+1:idx+n_i) = groups{i}(:);
+                group_labels(idx+1:idx+n_i) = i;
+                idx = idx + n_i;
             end
 
             % ANOVA
@@ -230,8 +241,17 @@ classdef statistics
                     error('ecalculator:statistics:unknownDist', '未知分布类型: %s', dist_type);
             end
 
-            % KS 检验
-            [h, p] = kstest(data);
+            % KS 检验 (使用拟合的分布参数)
+            switch lower(dist_type)
+                case 'normal'
+                    [h, p] = kstest(data, 'CDF', [data, normcdf(data, mu, sigma)]);
+                case 'exponential'
+                    [h, p] = kstest(data, 'CDF', [data, expcdf(data, mu)]);
+                case 'weibull'
+                    [h, p] = kstest(data, 'CDF', [data, wblcdf(data, mu, sigma)]);
+                otherwise
+                    [h, p] = kstest(data);
+            end
 
             fprintf('📊 分布拟合 (%s):\n', dist_name);
             fprintf('   参数:       %s\n', mat2str([mu sigma]));

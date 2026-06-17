@@ -135,8 +135,8 @@ classdef timeseries
             b = X \ dy;
             residuals = dy - X * b;
 
-            % 计算 ADF 统计量
-            se = sqrt(sum(residuals.^2) / (n-4)) * sqrt(inv(X'*X));
+            % 计算 ADF 统计量 (使用 \ 代替 inv 提高数值稳定性)
+            se = sqrt(sum(residuals.^2) / (n-4)) * sqrt(diag((X'*X) \ eye(size(X,2))));
             adf_stat = b(2) / se(2,2);
 
             % 近似 p 值 (MacKinnon 临界值)
@@ -199,15 +199,22 @@ classdef timeseries
             info.is_stationary = is_stationary;
         end
 
-        function info = exponential_smoothing(y, alpha, method)
+        function info = exponential_smoothing(y, alpha, varargin)
         %EXPONENTIAL_SMOOTHING 指数平滑预测
         %
         %   info = ecalculator.timeseries.exponential_smoothing(y, alpha)
+        %   info = ecalculator.timeseries.exponential_smoothing(y, 0.3, 'method', 'double', 'beta', 0.3)
+        %   info = ecalculator.timeseries.exponential_smoothing(y, 0.3, 'method', 'triple', 'beta', 0.3, 'gamma', 0.3, 'period', 12)
         %
         %   输入:
         %     y      - 时间序列
         %     alpha  - 平滑系数 (0~1, 默认 0.3)
-        %     method - 'simple', 'double' (Holt), 'triple' (Holt-Winters)
+        %
+        %   可选参数:
+        %     'method' - 'simple', 'double' (Holt), 'triple' (Holt-Winters)
+        %     'beta'   - 趋势平滑系数 (double/triple, 默认 0.3)
+        %     'gamma'  - 季节平滑系数 (triple, 默认 0.3)
+        %     'period' - 季节周期 (triple, 默认 12)
         %
         %   输出:
         %     info.forecast - 预测值
@@ -217,10 +224,15 @@ classdef timeseries
         %
         %   示例:
         %     y = (1:100)' + randn(100,1)*2;
-        %     info = ecalculator.timeseries.exponential_smoothing(y, 0.3, 'double')
+        %     info = ecalculator.timeseries.exponential_smoothing(y, 0.3, 'method', 'double')
 
             if nargin < 2, alpha = 0.3; end
-            if nargin < 3, method = 'simple'; end
+
+            opts = struct('method', 'simple', 'beta', 0.3, 'gamma', 0.3, 'period', 12);
+            for i = 1:2:numel(varargin)
+                opts.(varargin{i}) = varargin{i+1};
+            end
+            method = opts.method;
 
             y = y(:);
             n = numel(y);
@@ -240,7 +252,7 @@ classdef timeseries
 
                 case 'double'
                     % Holt 双参数指数平滑
-                    beta = 0.3;  % 趋势平滑系数
+                    beta = opts.beta;  % 趋势平滑系数
 
                     level = zeros(n, 1);
                     trend = zeros(n, 1);
@@ -257,9 +269,9 @@ classdef timeseries
 
                 case 'triple'
                     % Holt-Winters 三参数指数平滑 (加法模型)
-                    period = 12;  % 默认周期
-                    beta = 0.3;
-                    gamma = 0.3;  % 季节平滑系数
+                    period = opts.period;  % 季节周期
+                    beta = opts.beta;
+                    gamma = opts.gamma;  % 季节平滑系数
 
                     level = zeros(n, 1);
                     trend = zeros(n, 1);

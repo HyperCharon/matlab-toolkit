@@ -51,13 +51,14 @@ function init_project(project_name, varargin)
     if opts.git
         create_gitignore(project_name);
         try
-            old_dir = pwd;
-            cd(project_name);
-            system('git init');
-            cd(old_dir);
-            fprintf('   ✅ Git 仓库已初始化\n');
-        catch
-            fprintf('   ⚠️  Git 初始化失败\n');
+            [status, ~] = system(['git init ' project_name]);
+            if status == 0
+                fprintf('   ✅ Git 仓库已初始化\n');
+            else
+                fprintf('   ⚠️  Git 初始化失败\n');
+            end
+        catch ME
+            fprintf('   ⚠️  Git 初始化失败: %s\n', ME.message);
         end
     end
 

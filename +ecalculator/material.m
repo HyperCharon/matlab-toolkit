@@ -32,6 +32,10 @@ classdef material
         %
         %   ecalculator.material.strain(0.001, 1)
 
+            if L == 0
+                error('ecalculator:material:zeroLength', '原长不能为零');
+            end
+
             epsilon = dL / L;
 
             fprintf('📏 应变计算:\n');

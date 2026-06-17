@@ -36,8 +36,14 @@ function fig = waterfall(x, y, z, varargin)
     n_lines = size(z, 1);
 
     % 获取颜色映射
-    cmap_func = str2func(opts.colormap);
-    cmap = cmap_func(n_lines);
+    try
+        cmap_func = str2func(opts.colormap);
+        cmap = cmap_func(n_lines);
+    catch
+        warning('eplot:waterfall:invalidColormap', ...
+            '无效的配色方案 "%s"，使用默认 jet', opts.colormap);
+        cmap = jet(n_lines);
+    end
 
     hold on;
     for i = 1:n_lines

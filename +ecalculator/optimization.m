@@ -202,6 +202,11 @@ classdef optimization
             a = u(1);
             b = u(2);
 
+            if abs(a) < 1e-10
+                warning('ecalculator:optimization:smallA', ...
+                    '发展系数 a 接近零，预测可能不稳定');
+            end
+
             % 预测累加序列
             X1_hat = zeros(n + n_predict, 1);
             X1_hat(1) = X1(1);
@@ -298,7 +303,9 @@ classdef optimization
             % 计算目标函数值
             try
                 Y = func(X);
-            catch
+            catch ME
+                warning('ecalculator:optimization:batchEvalFailed', ...
+                    '批量函数调用失败，改用逐个调用: %s', ME.message);
                 % 如果批量调用失败，逐个调用
                 Y = zeros(n_samples, 1);
                 for i = 1:n_samples

@@ -275,7 +275,9 @@ function generate_signatures(project_root)
             if ~isempty(sig)
                 sigs.(func_name) = sig;
             end
-        catch
+        catch ME
+            warning('ecalculator:package:sigFailed', ...
+                '读取函数签名失败 %s: %s', func_name, ME.message);
         end
     end
 

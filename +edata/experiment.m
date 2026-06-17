@@ -325,41 +325,45 @@ classdef experiment
                 fprintf('   采样点: %d\n', summary.n_samples);
             end
         end
-    end
-end
 
-function generate_report(obj, output_dir)
-    report_file = fullfile(output_dir, 'experiment_report.md');
-    fid = fopen(report_file, 'w');
+        function generate_report(obj, output_dir)
+        %GENERATE_REPORT 生成实验报告
+        %
+        %   exp.generate_report('output/');
 
-    fprintf(fid, '# 实验数据处理报告\n\n');
-    fprintf(fid, '- 生成时间: %s\n', datestr(now));
-    fprintf(fid, '- 数据文件夹: %s\n', obj.data_folder);
-    fprintf(fid, '- 文件数量: %d\n\n', numel(obj.files));
+            report_file = fullfile(output_dir, 'experiment_report.md');
+            fid = fopen(report_file, 'w');
 
-    fprintf(fid, '## 配置参数\n\n');
-    fprintf(fid, '- 采样率: %d Hz\n', obj.config.Fs);
-    fprintf(fid, '- 去直流: %s\n', mat2str(obj.config.remove_dc));
-    if ~isempty(obj.config.filter_fc)
-        fprintf(fid, '- 滤波: %s @ %d Hz\n', obj.config.filter_type, obj.config.filter_fc);
-    end
+            fprintf(fid, '# 实验数据处理报告\n\n');
+            fprintf(fid, '- 生成时间: %s\n', datestr(now));
+            fprintf(fid, '- 数据文件夹: %s\n', obj.data_folder);
+            fprintf(fid, '- 文件数量: %d\n\n', numel(obj.files));
 
-    if isfield(obj.results, 'stats')
-        fprintf(fid, '\n## 统计结果\n\n');
-        fprintf(fid, '| 文件 | 均值 | 标准差 | RMS | 峰值 |\n');
-        fprintf(fid, '|------|------|--------|-----|------|\n');
-        for i = 1:numel(obj.results.stats)
-            if isempty(obj.results.stats{i})
-                continue;
+            fprintf(fid, '## 配置参数\n\n');
+            fprintf(fid, '- 采样率: %d Hz\n', obj.config.Fs);
+            fprintf(fid, '- 去直流: %s\n', mat2str(obj.config.remove_dc));
+            if ~isempty(obj.config.filter_fc)
+                fprintf(fid, '- 滤波: %s @ %d Hz\n', obj.config.filter_type, obj.config.filter_fc);
             end
-            stats = obj.results.stats{i};
-            fields = fieldnames(stats);
-            s = stats.(fields{1});
-            fprintf(fid, '| %s | %.4f | %.4f | %.4f | %.4f |\n', ...
-                obj.files(i).name, s.mean, s.std, s.rms, s.peak);
+
+            if isfield(obj.results, 'stats')
+                fprintf(fid, '\n## 统计结果\n\n');
+                fprintf(fid, '| 文件 | 均值 | 标准差 | RMS | 峰值 |\n');
+                fprintf(fid, '|------|------|--------|-----|------|\n');
+                for i = 1:numel(obj.results.stats)
+                    if isempty(obj.results.stats{i})
+                        continue;
+                    end
+                    stats = obj.results.stats{i};
+                    fields = fieldnames(stats);
+                    s = stats.(fields{1});
+                    fprintf(fid, '| %s | %.4f | %.4f | %.4f | %.4f |\n', ...
+                        obj.files(i).name, s.mean, s.std, s.rms, s.peak);
+                end
+            end
+
+            fclose(fid);
+            fprintf('   ✅ 报告已生成: %s\n', report_file);
         end
     end
-
-    fclose(fid);
-    fprintf('   ✅ 报告已生成: %s\n', report_file);
 end

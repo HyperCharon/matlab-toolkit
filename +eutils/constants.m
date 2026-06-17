@@ -88,11 +88,11 @@ classdef constants
                     fprintf('   值:   9.80665 m/s²\n');
                     fprintf('   说明: 海平面标准重力加速度\n');
 
-                case {'kb', 'boltzmann'}
-                    fprintf('玻尔兹曼常数:\n');
-                    fprintf('   符号: kB\n');
-                    fprintf('   值:   1.380649 × 10⁻²³ J/K\n');
-                    fprintf('   说明: 关系温度与能量的基本常数\n');
+                case {'G', 'gravitational_constant'}
+                    fprintf('万有引力常数:\n');
+                    fprintf('   符号: G\n');
+                    fprintf('   值:   6.67430 × 10⁻¹¹ m³/(kg·s²)\n');
+                    fprintf('   说明: 牛顿万有引力定律常数\n');
 
                 case {'h', 'planck'}
                     fprintf('普朗克常数:\n');
@@ -100,17 +100,142 @@ classdef constants
                     fprintf('   值:   6.62607015 × 10⁻³⁴ J·s\n');
                     fprintf('   说明: 量子力学基本常数\n');
 
+                case {'hbar', 'reduced_planck'}
+                    fprintf('约化普朗克常数:\n');
+                    fprintf('   符号: ℏ\n');
+                    fprintf('   值:   1.054571817 × 10⁻³⁴ J·s\n');
+                    fprintf('   说明: h/(2π)，量子力学常用\n');
+
+                case {'kb', 'boltzmann'}
+                    fprintf('玻尔兹曼常数:\n');
+                    fprintf('   符号: kB\n');
+                    fprintf('   值:   1.380649 × 10⁻²³ J/K\n');
+                    fprintf('   说明: 关系温度与能量的基本常数\n');
+
+                case {'NA', 'avogadro'}
+                    fprintf('阿伏伽德罗常数:\n');
+                    fprintf('   符号: NA\n');
+                    fprintf('   值:   6.02214076 × 10²³ 1/mol\n');
+                    fprintf('   说明: 1摩尔物质的粒子数\n');
+
+                case {'R', 'gas_constant'}
+                    fprintf('理想气体常数:\n');
+                    fprintf('   符号: R\n');
+                    fprintf('   值:   8.314462618 J/(mol·K)\n');
+                    fprintf('   说明: 理想气体状态方程常数\n');
+
                 case {'sigma', 'stefan_boltzmann'}
                     fprintf('斯蒂芬-玻尔兹曼常数:\n');
                     fprintf('   符号: σ\n');
                     fprintf('   值:   5.670374419 × 10⁻⁸ W/(m²·K⁴)\n');
                     fprintf('   说明: 黑体辐射定律常数\n');
 
+                case {'eV', 'electron_volt'}
+                    fprintf('电子伏特:\n');
+                    fprintf('   符号: eV\n');
+                    fprintf('   值:   1.602176634 × 10⁻¹⁹ J\n');
+                    fprintf('   说明: 电子经过1V电势差获得的能量\n');
+
                 case {'e', 'elementary_charge'}
                     fprintf('基本电荷:\n');
                     fprintf('   符号: e\n');
                     fprintf('   值:   1.602176634 × 10⁻¹⁹ C\n');
                     fprintf('   说明: 电子电荷量，精确值\n');
+
+                case {'epsilon0', 'vacuum_permittivity'}
+                    fprintf('真空介电常数:\n');
+                    fprintf('   符号: ε₀\n');
+                    fprintf('   值:   8.8541878128 × 10⁻¹² F/m\n');
+                    fprintf('   说明: 真空中的介电常数\n');
+
+                case {'mu0', 'vacuum_permeability'}
+                    fprintf('真空磁导率:\n');
+                    fprintf('   符号: μ₀\n');
+                    fprintf('   值:   1.25663706212 × 10⁻⁶ H/m\n');
+                    fprintf('   说明: 真空中的磁导率\n');
+
+                case {'Z0', 'vacuum_impedance'}
+                    fprintf('真空阻抗:\n');
+                    fprintf('   符号: Z₀\n');
+                    fprintf('   值:   376.730313668 Ω\n');
+                    fprintf('   说明: 真空中的电磁波阻抗\n');
+
+                case {'pi'}
+                    fprintf('圆周率:\n');
+                    fprintf('   符号: π\n');
+                    fprintf('   值:   3.14159265358979323846...\n');
+                    fprintf('   说明: 圆的周长与直径之比\n');
+
+                case {'e_num', 'euler'}
+                    fprintf('自然常数:\n');
+                    fprintf('   符号: e\n');
+                    fprintf('   值:   2.71828182845904523536...\n');
+                    fprintf('   说明: 自然对数的底数\n');
+
+                case {'rho_water'}
+                    fprintf('水密度 (25°C):\n');
+                    fprintf('   值:   997 kg/m³\n');
+                    fprintf('   说明: 标准大气压下25°C水的密度\n');
+
+                case {'rho_air'}
+                    fprintf('空气密度 (15°C, 1atm):\n');
+                    fprintf('   值:   1.225 kg/m³\n');
+                    fprintf('   说明: 标准大气压下15°C空气的密度\n');
+
+                case {'cp_water'}
+                    fprintf('水比热容:\n');
+                    fprintf('   值:   4186 J/(kg·K)\n');
+                    fprintf('   说明: 水的定压比热容\n');
+
+                case {'cp_air'}
+                    fprintf('空气比热容:\n');
+                    fprintf('   值:   1005 J/(kg·K)\n');
+                    fprintf('   说明: 空气的定压比热容\n');
+
+                case {'mu_water'}
+                    fprintf('水动力粘度 (25°C):\n');
+                    fprintf('   值:   8.9 × 10⁻⁴ Pa·s\n');
+                    fprintf('   说明: 25°C水的动力粘度\n');
+
+                case {'mu_air'}
+                    fprintf('空气动力粘度 (15°C):\n');
+                    fprintf('   值:   1.81 × 10⁻⁵ Pa·s\n');
+                    fprintf('   说明: 15°C空气的动力粘度\n');
+
+                case {'k_water'}
+                    fprintf('水导热系数 (25°C):\n');
+                    fprintf('   值:   0.606 W/(m·K)\n');
+                    fprintf('   说明: 25°C水的导热系数\n');
+
+                case {'k_air'}
+                    fprintf('空气导热系数 (15°C):\n');
+                    fprintf('   值:   0.0257 W/(m·K)\n');
+                    fprintf('   说明: 15°C空气的导热系数\n');
+
+                case {'E_steel'}
+                    fprintf('钢弹性模量:\n');
+                    fprintf('   值:   200 GPa\n');
+                    fprintf('   说明: 结构钢的杨氏模量\n');
+
+                case {'E_aluminum'}
+                    fprintf('铝弹性模量:\n');
+                    fprintf('   值:   69 GPa\n');
+                    fprintf('   说明: 铝合金的杨氏模量\n');
+
+                case {'E_copper'}
+                    fprintf('铜弹性模量:\n');
+                    fprintf('   值:   117 GPa\n');
+                    fprintf('   说明: 铜的杨氏模量\n');
+
+                case {'E_titanium'}
+                    fprintf('钛弹性模量:\n');
+                    fprintf('   值:   114 GPa\n');
+                    fprintf('   说明: 钛合金的杨氏模量\n');
+
+                case {'E_concrete'}
+                    fprintf('混凝土弹性模量:\n');
+                    fprintf('   值:   30 GPa\n');
+                    fprintf('   说明: 混凝土的杨氏模量\n');
 
                 otherwise
                     fprintf('未知常数: %s\n', name);

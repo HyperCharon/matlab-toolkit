@@ -18,6 +18,11 @@ classdef communications
         %
         %   info = ecalculator.communications.snr_db(100, 1)
 
+            if S <= 0 || N <= 0
+                error('ecalculator:communications:invalidPower', ...
+                    '信号功率和噪声功率必须为正数');
+            end
+
             snr_val = 10*log10(S/N);
 
             fprintf('📡 信噪比:\n');

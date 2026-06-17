@@ -13,9 +13,17 @@ function results = benchmark(varargin)
 %
 %   See also eutils.optimize, timeit, gputimeit
 
+    % 检查输入参数
+    if isempty(varargin)
+        error('ecalculator:benchmark:noInput', '请提供要测试的函数名称或句柄');
+    end
+
     % 解析输入
     if ischar(varargin{1}) && strcmp(varargin{1}, 'compare')
         % 比较模式
+        if numel(varargin) < 3
+            error('ecalculator:benchmark:insufficientArgs', '比较模式需要提供两个函数');
+        end
         func1 = varargin{2};
         func2 = varargin{3};
         varargin = varargin(4:end);
@@ -111,7 +119,9 @@ function results = run_single(func, opts)
             f = @() func_handle(opts.inputs{:});
             results.timeit = timeit(f);
         end
-    catch
+    catch ME
+        warning('ecalculator:benchmark:timeitFailed', ...
+            'timeit 测量失败: %s', ME.message);
         results.timeit = NaN;
     end
 
@@ -182,7 +192,9 @@ function results = run_comparison(func1, func2, opts)
         results.ttest_h = h;
         results.ttest_p = p;
         results.significant = h;
-    catch
+    catch ME
+        warning('ecalculator:benchmark:ttestFailed', ...
+            'ttest2 检验失败: %s', ME.message);
         results.ttest_h = NaN;
         results.ttest_p = NaN;
         results.significant = NaN;

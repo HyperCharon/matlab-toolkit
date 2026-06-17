@@ -54,7 +54,9 @@ function optimize(func_or_script, varargin)
         else
             feval(func_or_script, opts.inputs{:});
         end
-    catch
+    catch ME
+        warning('ecalculator:optimize:profileFailed', ...
+            '性能分析执行失败: %s', ME.message);
     end
     profile off;
 
@@ -154,6 +156,13 @@ function optimize(func_or_script, varargin)
             strrep(func_name, '.', '_'));
 
         fid = fopen(report_file, 'w');
+        if fid == -1
+            warning('ecalculator:optimize:fileOpenFailed', ...
+                '无法创建报告文件: %s', report_file);
+            return;
+        end
+        cleanup = onCleanup(@() fclose(fid));
+
         fprintf(fid, 'MatForge Toolkit 性能优化报告\n');
         fprintf(fid, '====================\n\n');
         fprintf(fid, '函数: %s\n', func_name);
@@ -170,7 +179,6 @@ function optimize(func_or_script, varargin)
             end
         end
 
-        fclose(fid);
         fprintf('   ✅ 报告已生成: %s\n', report_file);
     end
 end

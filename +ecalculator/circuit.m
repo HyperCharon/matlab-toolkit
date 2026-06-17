@@ -140,10 +140,16 @@ classdef circuit
             info.tf = sys;
         end
 
-        function info = rlc_resonance(R, L, C)
+        function info = rlc_resonance(R, L, C, varargin)
         %RLC_RESONANCE RLC 谐振电路分析
         %
         %   ecalculator.circuit.rlc_resonance(10, 10e-3, 100e-9)
+        %   ecalculator.circuit.rlc_resonance(10, 10e-3, 100e-9, 'plot', false)
+
+            opts = struct('plot', true);
+            for i = 1:2:numel(varargin)
+                opts.(varargin{i}) = varargin{i+1};
+            end
 
             w0 = 1 / sqrt(L * C);
             f0 = w0 / (2 * pi);
@@ -162,11 +168,13 @@ classdef circuit
             fprintf('   特性阻抗:   %s\n', eutils.formatters.resistance(Z0));
 
             % 绘制频率响应
-            sys = tf([1 0], [L R 1/C]);
-            figure('Name', 'RLC Resonance');
-            bode(sys);
-            title(sprintf('RLC Resonance (f₀ = %s, Q = %.1f)', eutils.formatters.frequency(f0), Q));
-            grid on;
+            if opts.plot
+                sys = tf([1 0], [L R 1/C]);
+                figure('Name', 'RLC Resonance');
+                bode(sys);
+                title(sprintf('RLC Resonance (f₀ = %s, Q = %.1f)', eutils.formatters.frequency(f0), Q));
+                grid on;
+            end
 
             info.f0 = f0;
             info.w0 = w0;
@@ -216,6 +224,10 @@ classdef circuit
         %POWER 功率计算
         %
         %   ecalculator.circuit.power(12, 0.5)
+
+            if I == 0
+                error('ecalculator:circuit:zeroCurrent', '电流不能为零');
+            end
 
             P = V * I;
             R = V / I;

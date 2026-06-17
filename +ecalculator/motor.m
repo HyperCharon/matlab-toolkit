@@ -9,10 +9,11 @@ classdef motor
 %   See also ecalculator.control, ecalculator.circuit
 
     methods(Static)
-        function info = dc_motor(V, Ra, La, Ke, Kt, J, B)
+        function info = dc_motor(V, Ra, La, Ke, Kt, J, B, varargin)
         %DC_MOTOR 直流电机完整分析
         %
         %   ecalculator.motor.dc_motor(24, 0.5, 1e-3, 0.05, 0.05, 1e-4, 1e-5)
+        %   ecalculator.motor.dc_motor(24, 0.5, 1e-3, 0.05, 0.05, 1e-4, 1e-5, 'plot', false)
         %
         %   参数:
         %     V  - 额定电压 (V)
@@ -22,6 +23,11 @@ classdef motor
         %     Kt - 转矩常数 (N·m/A)
         %     J  - 转动惯量 (kg·m²)
         %     B  - 粘性摩擦系数 (N·m·s/rad)
+
+            opts = struct('plot', true);
+            for i = 1:2:numel(varargin)
+                opts.(varargin{i}) = varargin{i+1};
+            end
 
             % 堵转参数
             I_stall = V / Ra;
@@ -68,44 +74,46 @@ classdef motor
             fprintf('   机械时间常数: %s\n', eutils.formatters.time(tau_m));
 
             % 绘制特性曲线
-            fig = figure('Name', 'DC Motor Characteristics');
+            if opts.plot
+                fig = figure('Name', 'DC Motor Characteristics');
 
-            % 转矩-转速曲线
-            subplot(2,2,1);
-            T_range = linspace(0, T_stall, 100);
-            w_range = w_no_load * (1 - T_range/T_stall);
-            RPM_range = w_range * 60 / (2*pi);
-            plot(T_range, RPM_range, 'b-', 'LineWidth', 1.5);
-            xlabel('Torque (N·m)');
-            ylabel('Speed (RPM)');
-            title('Torque-Speed Curve');
-            grid on;
+                % 转矩-转速曲线
+                subplot(2,2,1);
+                T_range = linspace(0, T_stall, 100);
+                w_range = w_no_load * (1 - T_range/T_stall);
+                RPM_range = w_range * 60 / (2*pi);
+                plot(T_range, RPM_range, 'b-', 'LineWidth', 1.5);
+                xlabel('Torque (N·m)');
+                ylabel('Speed (RPM)');
+                title('Torque-Speed Curve');
+                grid on;
 
-            % 转矩-电流曲线
-            subplot(2,2,2);
-            I_range = T_range / Kt;
-            plot(T_range, I_range*1000, 'r-', 'LineWidth', 1.5);
-            xlabel('Torque (N·m)');
-            ylabel('Current (mA)');
-            title('Torque-Current Curve');
-            grid on;
+                % 转矩-电流曲线
+                subplot(2,2,2);
+                I_range = T_range / Kt;
+                plot(T_range, I_range*1000, 'r-', 'LineWidth', 1.5);
+                xlabel('Torque (N·m)');
+                ylabel('Current (mA)');
+                title('Torque-Current Curve');
+                grid on;
 
-            % 效率曲线
-            subplot(2,2,3);
-            P_in = V * I_range;
-            P_out = T_range .* w_range;
-            efficiency = P_out ./ (P_in + eps) * 100;
-            plot(T_range, efficiency, 'g-', 'LineWidth', 1.5);
-            xlabel('Torque (N·m)');
-            ylabel('Efficiency (%)');
-            title('Efficiency Curve');
-            grid on;
+                % 效率曲线
+                subplot(2,2,3);
+                P_in = V * I_range;
+                P_out = T_range .* w_range;
+                efficiency = P_out ./ (P_in + eps) * 100;
+                plot(T_range, efficiency, 'g-', 'LineWidth', 1.5);
+                xlabel('Torque (N·m)');
+                ylabel('Efficiency (%)');
+                title('Efficiency Curve');
+                grid on;
 
-            % 阶跃响应
-            subplot(2,2,4);
-            step(sys);
-            title('Speed Step Response');
-            grid on;
+                % 阶跃响应
+                subplot(2,2,4);
+                step(sys);
+                title('Speed Step Response');
+                grid on;
+            end
 
             info.I_stall = I_stall;
             info.T_stall = T_stall;

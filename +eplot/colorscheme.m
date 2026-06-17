@@ -1,4 +1,4 @@
-function colorscheme(fig, scheme)
+function varargout = colorscheme(fig, scheme)
 %EPLOT.COLORSCHEME 应用配色方案
 %
 %   eplot.colorscheme('ieee')        应用 IEEE 推荐配色
@@ -25,7 +25,7 @@ function colorscheme(fig, scheme)
 
     % 如果请求列表
     if ischar(scheme) && strcmp(scheme, 'list')
-        fig = get_available_schemes();
+        varargout{1} = get_available_schemes();
         return;
     end
 

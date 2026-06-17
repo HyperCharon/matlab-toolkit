@@ -15,6 +15,10 @@ classdef fluid
         %
         %   ecalculator.fluid.reynolds(1000, 1, 0.01, 1e-3)
 
+            if mu == 0
+                error('ecalculator:fluid:zeroViscosity', '动力粘度不能为零');
+            end
+
             Re = rho * v * D / mu;
 
             fprintf('🌊 雷诺数计算:\n');

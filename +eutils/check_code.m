@@ -14,13 +14,14 @@ function issues = check_code(directory, varargin)
 %
 %   See also eutils.init_project, eutils.add_path
 
+    % 先设置默认目录，再解析选项
+    if nargin < 1
+        directory = pwd;
+    end
+
     opts = struct('verbose', true, 'max_lines', 500, 'max_func_lines', 100);
     for i = 1:2:numel(varargin)
         opts.(varargin{i}) = varargin{i+1};
-    end
-
-    if nargin < 1
-        directory = pwd;
     end
 
     % 查找所有 .m 文件
@@ -82,7 +83,9 @@ function issues = check_file(filepath, opts)
     try
         text = fileread(filepath);
         lines = splitlines(text);
-    catch
+    catch ME
+        warning('ecalculator:check:readFailed', ...
+            '读取文件失败 %s: %s', filepath, ME.message);
         return;
     end
 

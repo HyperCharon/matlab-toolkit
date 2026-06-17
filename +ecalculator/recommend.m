@@ -126,6 +126,15 @@ classdef recommend
                     };
                     complexity = {'低', '低', '中'};
 
+                case 'scheduling'
+                    methods_list = {'optimization.topsis', 'optimization.ahp', 'optimization.monte_carlo'};
+                    rationale = {
+                        'TOPSIS: 多目标调度方案评价'
+                        'AHP: 调度优先级层次分析'
+                        '蒙特卡洛: 调度风险评估'
+                    };
+                    complexity = {'低', '低', '中'};
+
                 otherwise
                     methods_list = {'statistics.regression', 'ml.kmeans_analysis'};
                     rationale = {

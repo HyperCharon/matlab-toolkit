@@ -169,7 +169,9 @@ function h1 = get_h1_line(filepath)
                 break;
             end
         end
-    catch
+    catch ME
+        warning('ecalculator:docs:h1Failed', ...
+            '读取 H1 行失败 %s: %s', filepath, ME.message);
     end
 end
 
@@ -204,7 +206,9 @@ function generate_signatures(project_root)
             if ~isempty(sig)
                 sigs.(func_name) = sig;
             end
-        catch
+        catch ME
+            warning('ecalculator:docs:sigFailed', ...
+                '读取函数签名失败 %s: %s', func_name, ME.message);
         end
     end
 
@@ -321,7 +325,9 @@ function usage = extract_usage(filepath)
         if ~isempty(example_lines)
             usage = strjoin(example_lines, '\n');
         end
-    catch
+    catch ME
+        warning('ecalculator:docs:usageFailed', ...
+            '读取使用示例失败: %s', ME.message);
     end
 end
 

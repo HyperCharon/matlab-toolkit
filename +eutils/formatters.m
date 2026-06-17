@@ -132,7 +132,7 @@ classdef formatters
         end
 
         function s = time(t)
-        %TIME 时间格式化 (自动选择 ns/μB/ms/s)
+        %TIME 时间格式化 (自动选择 ns/μs/ms/s)
         %
         %   s = eutils.formatters.time(0.001)
         %   返回: '1.0000 ms'

@@ -352,7 +352,9 @@ function order = select_order(data, max_order)
                 best_fit = fit;
                 order = n;
             end
-        catch
+        catch ME
+            warning('ecalculator:sysid:arxFailed', ...
+                'ARX 模型阶数 %d 拟合失败: %s', n, ME.message);
             continue;
         end
     end

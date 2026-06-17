@@ -429,12 +429,17 @@ classdef vibration
             info.peak_freq = f(Pxx == max(Pxx));
         end
 
-        function info = rms_envelope(x, Fs, window_size)
+        function info = rms_envelope(x, Fs, varargin)
         %RMS_ENVELOPE RMS 包络分析
         %
-        %   ecalculator.vibration.rms_envelope(x, 10000, 100)
+        %   ecalculator.vibration.rms_envelope(x, 10000, 'window', 100)
+        %   ecalculator.vibration.rms_envelope(x, 10000, 'window', 100, 'plot', false)
 
-            if nargin < 3, window_size = 100; end
+            opts = struct('window', 100, 'plot', true);
+            for i = 1:2:numel(varargin)
+                opts.(varargin{i}) = varargin{i+1};
+            end
+            window_size = opts.window;
 
             x = x(:);
             N = numel(x);
@@ -457,20 +462,22 @@ classdef vibration
             fprintf('   包络最大: %.6f\n', max(rms_env));
             fprintf('   包络最小: %.6f\n', min(rms_env));
 
-            figure('Name', 'RMS Envelope');
-            subplot(2,1,1);
-            plot((1:N)/Fs, x, 'b-', 'LineWidth', 0.5);
-            xlabel('Time (s)');
-            ylabel('Amplitude');
-            title('Raw Signal');
-            grid on;
+            if opts.plot
+                figure('Name', 'RMS Envelope');
+                subplot(2,1,1);
+                plot((1:N)/Fs, x, 'b-', 'LineWidth', 0.5);
+                xlabel('Time (s)');
+                ylabel('Amplitude');
+                title('Raw Signal');
+                grid on;
 
-            subplot(2,1,2);
-            plot(t_env, rms_env, 'r-', 'LineWidth', 1.5);
-            xlabel('Time (s)');
-            ylabel('RMS');
-            title('RMS Envelope');
-            grid on;
+                subplot(2,1,2);
+                plot(t_env, rms_env, 'r-', 'LineWidth', 1.5);
+                xlabel('Time (s)');
+                ylabel('RMS');
+                title('RMS Envelope');
+                grid on;
+            end
 
             info.rms_envelope = rms_env;
             info.time = t_env;
